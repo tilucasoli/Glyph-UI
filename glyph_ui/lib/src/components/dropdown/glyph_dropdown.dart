@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../tokens/glyph_colors.dart';
-import '../../tokens/glyph_radius.dart';
 import '../../tokens/glyph_typography.dart';
+import 'glyph_dropdown_metrics.dart';
+import 'glyph_dropdown_style.dart';
+import 'glyph_dropdown_trigger_style.dart';
 
 /// Direction in which [GlyphDropdown] opens its overlay panel.
 enum GlyphDropdownDirection {
@@ -24,34 +25,34 @@ enum GlyphDropdownDirection {
 extension _DirectionX on GlyphDropdownDirection {
   /// Where on the trigger the panel attaches.
   Alignment get targetAnchor => switch (this) {
-    GlyphDropdownDirection.down => Alignment.bottomLeft,
-    GlyphDropdownDirection.up => Alignment.topLeft,
-    GlyphDropdownDirection.right => Alignment.centerRight,
-    GlyphDropdownDirection.left => Alignment.centerLeft,
+    .down => .bottomLeft,
+    .up => .topLeft,
+    .right => .centerRight,
+    .left => .centerLeft,
   };
 
   /// Which corner/edge of the panel aligns to [targetAnchor].
   Alignment get followerAnchor => switch (this) {
-    GlyphDropdownDirection.down => Alignment.topLeft,
-    GlyphDropdownDirection.up => Alignment.bottomLeft,
-    GlyphDropdownDirection.right => Alignment.centerLeft,
-    GlyphDropdownDirection.left => Alignment.centerRight,
+    .down => .topLeft,
+    .up => .bottomLeft,
+    .right => .centerLeft,
+    .left => .centerRight,
   };
 
   /// Gap between trigger and panel.
   Offset get offset => switch (this) {
-    GlyphDropdownDirection.down => const Offset(0, 6),
-    GlyphDropdownDirection.up => const Offset(0, -6),
-    GlyphDropdownDirection.right => const Offset(6, 0),
-    GlyphDropdownDirection.left => const Offset(-6, 0),
+    .down => const .new(0, 6),
+    .up => const .new(0, -6),
+    .right => const .new(6, 0),
+    .left => const .new(-6, 0),
   };
 
   /// [Align] used to keep the panel from stretching to screen edges.
   Alignment get panelAlign => switch (this) {
-    GlyphDropdownDirection.down => Alignment.topLeft,
-    GlyphDropdownDirection.up => Alignment.bottomLeft,
-    GlyphDropdownDirection.right => Alignment.centerLeft,
-    GlyphDropdownDirection.left => Alignment.centerRight,
+    .down => .topLeft,
+    .up => .bottomLeft,
+    .right => .centerLeft,
+    .left => .centerRight,
   };
 
   /// Chevron rotation (in turns) when the panel is **closed**.
@@ -59,36 +60,33 @@ extension _DirectionX on GlyphDropdownDirection {
   /// The animation plays `forward()` on open and `reverse()` on close,
   /// so `begin` = closed angle and `end` = open angle.
   double get chevronBegin => switch (this) {
-    GlyphDropdownDirection.down => 0.0, // ↓ pointing down
-    GlyphDropdownDirection.up => 0.5, // ↑ pointing up
-    GlyphDropdownDirection.right => -0.25, // → pointing right
-    GlyphDropdownDirection.left => 0.25, // ← pointing left
+    .down => 0.0, // ↓ pointing down
+    .up => 0.5, // ↑ pointing up
+    .right => -0.25, // → pointing right
+    .left => 0.25, // ← pointing left
   };
 
   /// Chevron rotation (in turns) when the panel is **open**.
   double get chevronEnd => switch (this) {
-    GlyphDropdownDirection.down => 0.5, // ↑ flipped up
-    GlyphDropdownDirection.up => 1.0, // ↓ flipped down (360° = 0°)
-    GlyphDropdownDirection.right => 0.25, // ← flipped left
-    GlyphDropdownDirection.left => -0.25, // → flipped right
+    .down => 0.5, // ↑ flipped up
+    .up => 1.0, // ↓ flipped down (360° = 0°)
+    .right => 0.25, // ← flipped left
+    .left => -0.25, // → flipped right
   };
 }
 
 /// A single selectable item in [GlyphDropdown].
 ///
 /// [leading] is typically a coloured avatar/logo or icon.
-/// [subtitle] appears below [label] in smaller gray text.
 class GlyphDropdownItem<T> {
   const GlyphDropdownItem({
     required this.value,
     required this.label,
-    this.subtitle,
     this.leading,
   });
 
   final T value;
   final String label;
-  final String? subtitle;
 
   /// Optional leading widget rendered at the start of each option row.
   final Widget? leading;
@@ -96,45 +94,10 @@ class GlyphDropdownItem<T> {
 
 /// Styled dropdown selector with an animated overlay panel.
 ///
-/// Matches two patterns from the design reference:
-/// - `.event-selector-btn` — compact trigger (dot + label + chevron)
-/// - `.community-dropdown` — panel with optional header, leading widgets,
-///   subtitles, and a check mark on the selected item
-///
 /// Use [direction] to control which side the panel opens toward.
 /// The chevron icon in the trigger automatically rotates to reflect the
-/// open direction.
-///
-/// ```dart
-/// // Opens below (default)
-/// GlyphDropdown<String>(
-///   value: _eventId,
-///   placeholder: 'Select event…',
-///   items: const [
-///     GlyphDropdownItem(value: 'conf', label: 'Design Conference 2024'),
-///     GlyphDropdownItem(value: 'summit', label: 'TechPulse Summit'),
-///   ],
-///   onChanged: (v) => setState(() => _eventId = v),
-/// )
-///
-/// // Opens above (e.g. sidebar footer community switcher)
-/// GlyphDropdown<String>(
-///   value: _communityId,
-///   direction: GlyphDropdownDirection.up,
-///   header: 'Switch Community',
-///   items: [...],
-///   onChanged: (v) => setState(() => _communityId = v),
-/// )
-///
-/// // Opens to the right (e.g. context menu beside a sidebar item)
-/// GlyphDropdown<String>(
-///   value: _selected,
-///   direction: GlyphDropdownDirection.right,
-///   items: [...],
-///   onChanged: (v) => setState(() => _selected = v),
-/// )
-/// ```
-class GlyphDropdown<T> extends StatefulWidget {
+/// open direction. Pass `null` to [onChanged] to disable the dropdown.
+final class GlyphDropdown<T> extends StatefulWidget {
   const GlyphDropdown({
     super.key,
     required this.items,
@@ -144,30 +107,35 @@ class GlyphDropdown<T> extends StatefulWidget {
     this.header,
     this.leading,
     this.minWidth = 220,
-    this.direction = GlyphDropdownDirection.down,
+    this.direction = .down,
+    required this.triggerStyle,
+    this.dropdownStyle,
+    this.metrics,
   });
 
   final List<GlyphDropdownItem<T>> items;
   final T? value;
-  final ValueChanged<T> onChanged;
+  final ValueChanged<T>? onChanged;
 
   /// Shown in the trigger when [value] is null.
   final String? placeholder;
 
   /// Optional section label at the top of the panel
-  /// (e.g. "Switch Community"). Rendered in uppercase 11px.
+  /// (e.g. "Switch Community"). Rendered in uppercase 12px.
   final String? header;
 
   /// Fixed leading widget shown inside the trigger before the label.
-  /// Useful for a status dot, avatar, or icon that doesn't change
-  /// with the selection. Takes precedence over the selected item's leading.
   final Widget? leading;
 
-  /// Minimum width of both the trigger and the panel. Defaults to 220.
+  /// Minimum width of both the trigger and the panel.
   final double minWidth;
 
-  /// Which side the panel opens toward. Defaults to [GlyphDropdownDirection.down].
+  /// Which side the panel opens toward.
   final GlyphDropdownDirection direction;
+
+  final GlyphDropdownTriggerStyle triggerStyle;
+  final GlyphDropdownStyle? dropdownStyle;
+  final GlyphDropdownMetrics? metrics;
 
   @override
   State<GlyphDropdown<T>> createState() => _GlyphDropdownState<T>();
@@ -175,23 +143,34 @@ class GlyphDropdown<T> extends StatefulWidget {
 
 class _GlyphDropdownState<T> extends State<GlyphDropdown<T>>
     with SingleTickerProviderStateMixin {
-  final _layerLink = LayerLink();
-  final _overlayController = OverlayPortalController();
+  final LayerLink _layerLink = .new();
+  final OverlayPortalController _overlayController = .new();
+  final WidgetStatesController _controller = .new();
   late final AnimationController _chevronAnim;
 
   bool get _isOpen => _overlayController.isShowing;
+  bool get _isDisabled => widget.onChanged == null;
 
   @override
   void initState() {
     super.initState();
+    _controller.addListener(() => setState(() {}));
+    _controller.update(.disabled, _isDisabled);
     _chevronAnim = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 150),
+      duration: const .new(milliseconds: 150),
     );
   }
 
   @override
+  void didUpdateWidget(covariant GlyphDropdown<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _controller.update(.disabled, _isDisabled);
+  }
+
+  @override
   void dispose() {
+    _controller.dispose();
     _chevronAnim.dispose();
     super.dispose();
   }
@@ -206,10 +185,14 @@ class _GlyphDropdownState<T> extends State<GlyphDropdown<T>>
     _chevronAnim.reverse();
   }
 
-  void _toggle() => _isOpen ? _close() : _open();
+  void _toggle() {
+    if (_isDisabled) return;
+    _isOpen ? _close() : _open();
+  }
 
   void _select(T value) {
-    widget.onChanged(value);
+    if (_isDisabled) return;
+    widget.onChanged!(value);
     _close();
   }
 
@@ -227,6 +210,9 @@ class _GlyphDropdownState<T> extends State<GlyphDropdown<T>>
     final label = selected?.label ?? widget.placeholder ?? '';
     final leading = widget.leading ?? selected?.leading;
     final dir = widget.direction;
+    final dropdownStyle =
+        widget.dropdownStyle ?? GlyphDropdownStyle.standard();
+    final metrics = widget.metrics ?? GlyphDropdownMetrics.medium();
 
     return CompositedTransformTarget(
       link: _layerLink,
@@ -234,14 +220,12 @@ class _GlyphDropdownState<T> extends State<GlyphDropdown<T>>
         controller: _overlayController,
         overlayChildBuilder: (ctx) => Stack(
           children: [
-            // Full-screen barrier — tapping outside closes the panel
             Positioned.fill(
               child: GestureDetector(
                 onTap: _close,
-                behavior: HitTestBehavior.opaque,
+                behavior: .opaque,
               ),
             ),
-            // Panel anchored according to [direction]
             CompositedTransformFollower(
               link: _layerLink,
               targetAnchor: dir.targetAnchor,
@@ -257,6 +241,7 @@ class _GlyphDropdownState<T> extends State<GlyphDropdown<T>>
                     header: widget.header,
                     minWidth: widget.minWidth,
                     onSelect: _select,
+                    style: dropdownStyle,
                   ),
                 ),
               ),
@@ -270,6 +255,10 @@ class _GlyphDropdownState<T> extends State<GlyphDropdown<T>>
           direction: dir,
           minWidth: widget.minWidth,
           onTap: _toggle,
+          isDisabled: _isDisabled,
+          controller: _controller,
+          triggerStyle: widget.triggerStyle,
+          metrics: metrics,
         ),
       ),
     );
@@ -278,7 +267,7 @@ class _GlyphDropdownState<T> extends State<GlyphDropdown<T>>
 
 // ── Trigger ───────────────────────────────────────────────────────────────────
 
-class _DropdownTrigger extends StatefulWidget {
+class _DropdownTrigger extends StatelessWidget {
   const _DropdownTrigger({
     required this.label,
     this.leading,
@@ -286,6 +275,10 @@ class _DropdownTrigger extends StatefulWidget {
     required this.direction,
     required this.minWidth,
     required this.onTap,
+    required this.isDisabled,
+    required this.controller,
+    required this.triggerStyle,
+    required this.metrics,
   });
 
   final String label;
@@ -294,70 +287,77 @@ class _DropdownTrigger extends StatefulWidget {
   final GlyphDropdownDirection direction;
   final double minWidth;
   final VoidCallback onTap;
-
-  @override
-  State<_DropdownTrigger> createState() => _DropdownTriggerState();
-}
-
-class _DropdownTriggerState extends State<_DropdownTrigger> {
-  bool _hovered = false;
+  final bool isDisabled;
+  final WidgetStatesController controller;
+  final GlyphDropdownTriggerStyle triggerStyle;
+  final GlyphDropdownMetrics metrics;
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          constraints: BoxConstraints(minWidth: widget.minWidth),
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
-          decoration: BoxDecoration(
-            color: _hovered ? GlyphColors.bgCanvas : GlyphColors.bgBody,
-            border: Border.all(color: GlyphColors.borderMedium),
-            borderRadius: GlyphRadius.borderSm,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
+    final states = controller.value;
+    final fgColor = triggerStyle.foregroundColor.resolve(states);
+    final chevronColor = triggerStyle.chevronColor.resolve(states);
+
+    return Semantics(
+      button: true,
+      child: Focus(
+        onFocusChange: (f) => controller.update(.focused, f),
+        child: MouseRegion(
+          cursor:
+              isDisabled ? SystemMouseCursors.basic : SystemMouseCursors.click,
+          onEnter: (_) => controller.update(.hovered, true),
+          onExit: (_) => controller.update(.hovered, false),
+          child: GestureDetector(
+            onTap: isDisabled ? null : onTap,
+            behavior: .opaque,
+            child: AnimatedContainer(
+              duration: triggerStyle.animationDuration,
+              curve: triggerStyle.animationCurve,
+              constraints: BoxConstraints(minWidth: minWidth),
+              decoration: ShapeDecoration(
+                color: triggerStyle.backgroundColor.resolve(states),
+                shape: triggerStyle.shape.resolve(states),
+                shadows: triggerStyle.shadows.resolve(states),
+              ),
+              padding: metrics.triggerPadding,
+              child: Row(
+                mainAxisSize: .max,
+                mainAxisAlignment: .spaceBetween,
                 children: [
-                  if (widget.leading != null) ...[
-                    widget.leading!,
-                    const SizedBox(width: 8),
-                  ],
-                  Text(
-                    widget.label,
-                    style: GlyphTextStyles.small.copyWith(
-                      color: GlyphColors.textPrimary,
-                      fontWeight: FontWeight.w500,
+                  Row(
+                    mainAxisSize: .min,
+                    children: [
+                      if (leading != null) ...[
+                        leading!,
+                        SizedBox(width: metrics.triggerLeadingGap),
+                      ],
+                      Text(
+                        label,
+                        style: metrics.triggerLabelTextStyle.copyWith(
+                          color: fgColor,
+                          fontWeight: .w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 12),
+                  RotationTransition(
+                    turns: Tween(
+                      begin: direction.chevronBegin,
+                      end: direction.chevronEnd,
+                    ).animate(CurvedAnimation(
+                      parent: chevronAnim,
+                      curve: Curves.easeInOut,
+                    )),
+                    child: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      size: metrics.chevronSize,
+                      color: chevronColor,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(width: 12),
-              RotationTransition(
-                turns:
-                    Tween(
-                      begin: widget.direction.chevronBegin,
-                      end: widget.direction.chevronEnd,
-                    ).animate(
-                      CurvedAnimation(
-                        parent: widget.chevronAnim,
-                        curve: Curves.easeInOut,
-                      ),
-                    ),
-                child: const Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  size: 14,
-                  color: GlyphColors.textTertiary,
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
@@ -374,6 +374,7 @@ class _DropdownPanel<T> extends StatelessWidget {
     required this.header,
     required this.minWidth,
     required this.onSelect,
+    required this.style,
   });
 
   final List<GlyphDropdownItem<T>> items;
@@ -381,6 +382,7 @@ class _DropdownPanel<T> extends StatelessWidget {
   final String? header;
   final double minWidth;
   final ValueChanged<T> onSelect;
+  final GlyphDropdownStyle style;
 
   @override
   Widget build(BuildContext context) {
@@ -390,21 +392,14 @@ class _DropdownPanel<T> extends StatelessWidget {
         constraints: BoxConstraints(minWidth: minWidth),
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: GlyphColors.bgSurface,
-          border: Border.all(color: GlyphColors.borderMedium),
-          borderRadius: GlyphRadius.borderSm,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.08),
-              blurRadius: 24,
-              offset: const Offset(0, 8),
-              spreadRadius: -4,
-            ),
-          ],
+          color: style.panelBackgroundColor,
+          border: Border.fromBorderSide(style.panelBorderSide),
+          borderRadius: style.panelBorderRadius,
+          boxShadow: style.panelShadows,
         ),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: .min,
+          crossAxisAlignment: .start,
           children: [
             if (header != null)
               Padding(
@@ -412,8 +407,8 @@ class _DropdownPanel<T> extends StatelessWidget {
                 child: Text(
                   header!.toUpperCase(),
                   style: GlyphTextStyles.meta.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: GlyphColors.textTertiary,
+                    fontWeight: .w600,
+                    color: style.headerColor,
                     letterSpacing: 0.6,
                   ),
                 ),
@@ -423,6 +418,7 @@ class _DropdownPanel<T> extends StatelessWidget {
                 item: item,
                 isSelected: item.value == value,
                 onTap: () => onSelect(item.value),
+                style: style,
               ),
             ),
           ],
@@ -439,11 +435,13 @@ class _DropdownOption<T> extends StatefulWidget {
     required this.item,
     required this.isSelected,
     required this.onTap,
+    required this.style,
   });
 
   final GlyphDropdownItem<T> item;
   final bool isSelected;
   final VoidCallback onTap;
+  final GlyphDropdownStyle style;
 
   @override
   State<_DropdownOption<T>> createState() => _DropdownOptionState<T>();
@@ -454,11 +452,12 @@ class _DropdownOptionState<T> extends State<_DropdownOption<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final style = widget.style;
     final bgColor = widget.isSelected
-        ? GlyphColors.bgSidebar
+        ? style.optionSelectedBackgroundColor
         : _hovered
-        ? GlyphColors.bgBody
-        : GlyphColors.bgBody.withValues(alpha: 0.0);
+            ? style.optionHoveredBackgroundColor
+            : style.optionBackgroundColor;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -467,39 +466,33 @@ class _DropdownOptionState<T> extends State<_DropdownOption<T>> {
       child: GestureDetector(
         onTap: widget.onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 100),
+          duration: const .new(milliseconds: 100),
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
           decoration: BoxDecoration(
             color: bgColor,
-            borderRadius: GlyphRadius.borderSm,
+            borderRadius: style.optionBorderRadius,
           ),
           child: Row(
-            mainAxisSize: MainAxisSize.max,
+            mainAxisSize: .max,
             children: [
               if (widget.item.leading != null) ...[
                 widget.item.leading!,
                 const SizedBox(width: 10),
               ],
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    widget.item.label,
-                    style: GlyphTextStyles.small.copyWith(
-                      color: GlyphColors.textPrimary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
+              Text(
+                widget.item.label,
+                style: GlyphTextStyles.small.copyWith(
+                  color: style.optionForegroundColor,
+                  fontWeight: .w500,
+                ),
               ),
               const Spacer(),
               if (widget.isSelected) ...[
                 const SizedBox(width: 12),
-                const Icon(
+                Icon(
                   Icons.check_rounded,
                   size: 16,
-                  color: GlyphColors.textPrimary,
+                  color: style.checkmarkColor,
                 ),
               ],
             ],
