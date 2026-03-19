@@ -3,28 +3,26 @@ import 'package:flutter/material.dart';
 import '../../tokens/glyph_colors.dart';
 import '../../tokens/glyph_radius.dart';
 
-/// Labeled text input field.
-///
-/// Matches `.input-wrapper` + `.input-label` + `.input-field` from the design:
-/// - Label: 13px, w600, textPrimary
-/// - Input: 48px height, 16px horizontal padding
-/// - Border: 1px solid --border-medium (#e5e5e5), radius-sm (8px)
-/// - Focus: border color animates to textPrimary
+/// Available size presets for [GlyphTextField].
+enum GlyphTextFieldSize { medium, large }
+
+/// Labeled text input field with stroke-style visuals.
 ///
 /// ```dart
-/// GlyphInputField(
+/// GlyphTextField(
 ///   label: 'Cardholder Name',
 ///   placeholder: 'John Doe',
-///   controller: _nameController,
+///   size: GlyphTextFieldSize.medium,
 /// )
-/// GlyphInputField(
+/// GlyphTextField(
 ///   label: 'Card Number',
 ///   placeholder: '0000 0000 0000 0000',
+///   size: GlyphTextFieldSize.large,
 ///   trailing: Icon(Icons.credit_card),
 /// )
 /// ```
-class GlyphInputField extends StatefulWidget {
-  const GlyphInputField({
+class GlyphTextField extends StatefulWidget {
+  const GlyphTextField({
     super.key,
     required this.label,
     this.placeholder,
@@ -34,6 +32,7 @@ class GlyphInputField extends StatefulWidget {
     this.obscureText = false,
     this.onChanged,
     this.trailing,
+    this.size = GlyphTextFieldSize.medium,
   });
 
   final String label;
@@ -43,18 +42,26 @@ class GlyphInputField extends StatefulWidget {
   final TextInputAction? textInputAction;
   final bool obscureText;
   final ValueChanged<String>? onChanged;
-
-  /// Optional widget placed inside the input on the trailing edge
-  /// (e.g. a card-brand icon next to the card number field).
   final Widget? trailing;
+  final GlyphTextFieldSize size;
 
   @override
-  State<GlyphInputField> createState() => _GlyphInputFieldState();
+  State<GlyphTextField> createState() => _GlyphTextFieldState();
 }
 
-class _GlyphInputFieldState extends State<GlyphInputField> {
+class _GlyphTextFieldState extends State<GlyphTextField> {
   late final FocusNode _focus;
   bool _focused = false;
+
+  double get _height => switch (widget.size) {
+    .medium => 48,
+    .large => 56,
+  };
+
+  EdgeInsets get _contentPadding => switch (widget.size) {
+    .medium => const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+    .large => const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+  };
 
   @override
   void initState() {
@@ -81,12 +88,11 @@ class _GlyphInputFieldState extends State<GlyphInputField> {
         const SizedBox(height: 6),
         AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          height: 48,
+          height: _height,
           decoration: BoxDecoration(
+            color: GlyphColors.bgSurface,
             border: Border.all(
-              color: _focused
-                  ? GlyphColors.textPrimary
-                  : GlyphColors.borderMedium,
+              color: _focused ? GlyphColors.textPrimary : GlyphColors.borderMedium,
             ),
             borderRadius: GlyphRadius.borderSm,
           ),
@@ -113,10 +119,7 @@ class _GlyphInputFieldState extends State<GlyphInputField> {
                       color: GlyphColors.textTertiary,
                     ),
                     isCollapsed: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
+                    contentPadding: _contentPadding,
                     border: InputBorder.none,
                   ),
                 ),

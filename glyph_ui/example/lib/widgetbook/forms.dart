@@ -2,27 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:glyph_ui/glyph_ui.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
-@widgetbook.UseCase(name: 'Input Field', type: GlyphInputField, path: '[Glyph]/Forms')
+@widgetbook.UseCase(name: 'Text Field (Medium)', type: GlyphTextField, path: '[Glyph]/Forms')
 Widget inputField(BuildContext context) {
-  return GlyphInputField(
+  return GlyphTextField(
     label: 'Cardholder Name',
     placeholder: 'John Doe',
+    size: GlyphTextFieldSize.medium,
   );
 }
 
-@widgetbook.UseCase(name: 'Input With Trailing', type: GlyphInputField, path: '[Glyph]/Forms')
+@widgetbook.UseCase(name: 'Text Field (Large)', type: GlyphTextField, path: '[Glyph]/Forms')
 Widget inputFieldTrailing(BuildContext context) {
-  return GlyphInputField(
+  return const GlyphTextField(
     label: 'Card Number',
     placeholder: '0000 0000 0000 0000',
-    trailing: const Icon(Icons.credit_card, size: 20),
-  );
-}
-
-@widgetbook.UseCase(name: 'Search Input', type: GlyphSearchInput, path: '[Glyph]/Forms')
-Widget searchInput(BuildContext context) {
-  return GlyphSearchInput(
-    placeholder: 'Search…',
-    onChanged: (_) {},
+    size: GlyphTextFieldSize.large,
+    trailing: Icon(Icons.credit_card, size: 20),
   );
 }
