@@ -1,82 +1,114 @@
 import 'package:flutter/material.dart';
 
-import '../../tokens/glyph_colors.dart';
-import 'glyph_button_style.dart';
-import 'glyph_button_theme.dart';
+import 'glyph_icon_button_style.dart';
 
-/// An icon-only button styled via [GlyphButtonThemeData] with [variant], [size],
-/// optional [style] override, and optional [tooltip].
-///
-/// Resolves [ButtonStyle] from [GlyphButtonThemeData.styleFor], merges [style],
-/// then applies size metrics (square [GlyphButtonStyleMetrics.iconButtonSize],
-/// [GlyphButtonStyleMetrics.iconButtonIconSize] for the icon). Uses [FilledButton]
-/// for focus and hover behavior.
-///
-/// ```dart
-/// GlyphIconButton(
-///   icon: Icon(Icons.search),
-///   onPressed: () {},
-///   semanticLabel: 'Search',
-///   tooltip: 'Search',
-/// )
-/// ```
-final class GlyphIconButton extends StatelessWidget {
+final class GlyphIconButton extends StatefulWidget {
   const GlyphIconButton({
     super.key,
     required this.icon,
     required this.onPressed,
     required this.semanticLabel,
-    this.variant = GlyphButtonVariant.stroke,
-    this.size = GlyphButtonSize.medium,
-    this.style,
+    required this.style,
     this.tooltip,
   });
 
   final Widget icon;
   final VoidCallback? onPressed;
   final String semanticLabel;
-  final GlyphButtonVariant variant;
-  final GlyphButtonSize size;
-  final ButtonStyle? style;
+  final GlyphIconButtonStyle style;
   final String? tooltip;
 
   @override
+  State<GlyphIconButton> createState() => _GlyphIconButtonState();
+}
+
+class _GlyphIconButtonState extends State<GlyphIconButton> {
+  final _controller = WidgetStatesController();
+
+  bool get _isDisabled => widget.onPressed == null;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() => setState(() {}));
+    _controller.update(WidgetState.disabled, _isDisabled);
+  }
+
+  @override
+  void didUpdateWidget(covariant GlyphIconButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _controller.update(WidgetState.disabled, _isDisabled);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onTapDown(TapDownDetails _) {
+    _controller.update(WidgetState.pressed, true);
+  }
+
+  void _onTapUp(TapUpDetails _) {
+    _controller.update(WidgetState.pressed, false);
+    widget.onPressed?.call();
+  }
+
+  void _onTapCancel() {
+    _controller.update(WidgetState.pressed, false);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final themeData = GlyphButtonThemeData.of(context);
-    final base = themeData.styleFor(variant);
-    final resolved = style != null ? base.merge(style!) : base;
+    final style = widget.style;
+    final states = _controller.value;
 
-    final metrics = GlyphButtonStyleMetrics.forSize(size);
-    final sizeOverrides = ButtonStyle(
-      padding: .all(.zero),
-      minimumSize: .all(Size(metrics.iconButtonSize, metrics.iconButtonSize)),
-    );
-    final finalStyle = resolved.merge(sizeOverrides);
-
-    final isDisabled = onPressed == null;
-    final iconColor = resolved.foregroundColor
-            ?.resolve(isDisabled ? const {MaterialState.disabled} : {}) ??
-        (isDisabled ? GlyphColors.textTertiary : null);
-
-    final button = Semantics(
+    Widget result = Semantics(
       button: true,
-      label: semanticLabel,
-      child: FilledButton(
-        style: finalStyle,
-        onPressed: onPressed,
-        child: IconTheme(
-          data: IconThemeData(
-            size: metrics.iconButtonIconSize,
-            color: iconColor,
+      label: widget.semanticLabel,
+      child: Focus(
+        onFocusChange: (focused) =>
+            _controller.update(WidgetState.focused, focused),
+        child: MouseRegion(
+          cursor:
+              _isDisabled ? SystemMouseCursors.basic : SystemMouseCursors.click,
+          onEnter: (_) => _controller.update(WidgetState.hovered, true),
+          onExit: (_) => _controller.update(WidgetState.hovered, false),
+          child: GestureDetector(
+            onTapDown: _isDisabled ? null : _onTapDown,
+            onTapUp: _isDisabled ? null : _onTapUp,
+            onTapCancel: _isDisabled ? null : _onTapCancel,
+            behavior: .opaque,
+            child: AnimatedContainer(
+              duration: style.animationDuration,
+              curve: style.animationCurve,
+              width: style.buttonSize,
+              height: style.buttonSize,
+              decoration: ShapeDecoration(
+                color: style.backgroundColor.resolve(states),
+                shape: style.shape.resolve(states).copyWith(
+                  side: style.side.resolve(states),
+                ),
+              ),
+              alignment: .center,
+              child: IconTheme(
+                data: IconThemeData(
+                  size: style.iconSize,
+                  color: style.foregroundColor.resolve(states),
+                ),
+                child: widget.icon,
+              ),
+            ),
           ),
-          child: icon,
         ),
       ),
     );
 
-    if (tooltip != null && tooltip!.isNotEmpty) {
-      return Tooltip(message: tooltip!, child: button);
+    if (widget.tooltip != null && widget.tooltip!.isNotEmpty) {
+      result = Tooltip(message: widget.tooltip!, child: result);
     }
-    return button;
+
+    return result;
   }
 }
