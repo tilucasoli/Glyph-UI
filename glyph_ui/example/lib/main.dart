@@ -87,19 +87,13 @@ final directories = [
         ],
       ),
       WidgetbookComponent(
-        name: 'GlyphInputField',
+        name: 'GlyphTextField',
         useCases: [
-          WidgetbookUseCase(name: 'Input Field', builder: inputField),
+          WidgetbookUseCase(name: 'Text Field (Medium)', builder: inputField),
           WidgetbookUseCase(
-            name: 'Input With Trailing',
+            name: 'Text Field (Large)',
             builder: inputFieldTrailing,
           ),
-        ],
-      ),
-      WidgetbookComponent(
-        name: 'GlyphSearchInput',
-        useCases: [
-          WidgetbookUseCase(name: 'Search Input', builder: searchInput),
         ],
       ),
       WidgetbookComponent(
