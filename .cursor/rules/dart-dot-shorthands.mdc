@@ -1,0 +1,79 @@
+---
+description: Use Dart dot shorthand syntax wherever the compiler can infer the type from context
+globs: **/*.dart
+alwaysApply: false
+---
+
+# Always Use Dot Shorthands
+
+Prefer dot shorthand syntax (`.foo`) over fully qualified names (`Type.foo`) whenever the context type is clear to the compiler. Reference: https://dart.dev/language/dot-shorthands
+
+## Enum values
+
+```dart
+// BAD
+Status currentStatus = Status.running;
+
+// GOOD
+Status currentStatus = .running;
+```
+
+## Switch expressions and cases
+
+```dart
+// BAD
+return switch (level) {
+  LogLevel.debug => 'gray',
+  LogLevel.error => 'red',
+};
+
+// GOOD
+return switch (level) {
+  .debug => 'gray',
+  .error => 'red',
+};
+```
+
+## Named and factory constructors
+
+```dart
+// BAD
+Point origin = Point.origin();
+
+// GOOD
+Point origin = .origin();
+```
+
+## Unnamed constructors via `.new`
+
+```dart
+// BAD
+final ScrollController _scrollController = ScrollController();
+Map<String, bool> flags = <String, bool>{};
+
+// GOOD
+final ScrollController _scrollController = .new();
+Map<String, bool> flags = .new();
+```
+
+## Static members
+
+```dart
+// BAD
+int port = int.parse('8080');
+BigInt zero = BigInt.zero;
+
+// GOOD
+int port = .parse('8080');
+BigInt zero = .zero;
+```
+
+## Equality checks (shorthand on the right-hand side)
+
+```dart
+// BAD
+if (myColor == Color.green) { ... }
+
+// GOOD
+if (myColor == .green) { ... }
+```

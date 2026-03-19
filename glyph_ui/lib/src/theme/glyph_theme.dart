@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../components/buttons/glyph_button_theme.dart';
 import '../tokens/glyph_colors.dart';
 import '../tokens/glyph_radius.dart';
 import '../tokens/glyph_spacing.dart';
@@ -136,7 +135,6 @@ abstract final class GlyphTheme {
         GlyphColorTokens.light(),
         GlyphSpacingTokens.defaults(),
         GlyphRadiusTokens.defaults(),
-        GlyphButtonThemeData.light(),
       ],
     );
   }
