@@ -3,10 +3,10 @@ import 'package:glyph_ui/glyph_ui.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
-import 'widgetbook/avatars.dart';
 import 'widgetbook/badges.dart';
 import 'widgetbook/buttons.dart';
 import 'widgetbook/cards.dart';
+import 'widgetbook/dropdowns.dart';
 import 'widgetbook/forms.dart';
 import 'widgetbook/layout.dart';
 import 'widgetbook/nav.dart';
@@ -52,10 +52,7 @@ final directories = [
       ),
       WidgetbookComponent(
         name: 'GlyphCard',
-        useCases: [
-          WidgetbookUseCase(name: 'Default', builder: cardDefault),
-          WidgetbookUseCase(name: 'Selected', builder: cardSelected),
-        ],
+        useCases: [WidgetbookUseCase(name: 'Default', builder: cardDefault)],
       ),
       WidgetbookComponent(
         name: 'GlyphPaymentMethodCard',
@@ -64,12 +61,6 @@ final directories = [
             name: 'Payment Method Cards',
             builder: paymentMethodCards,
           ),
-        ],
-      ),
-      WidgetbookComponent(
-        name: 'GlyphSecureBadge',
-        useCases: [
-          WidgetbookUseCase(name: 'Secure Badge', builder: secureBadge),
         ],
       ),
       WidgetbookComponent(
@@ -103,31 +94,8 @@ final directories = [
         ],
       ),
       WidgetbookComponent(
-        name: 'GlyphTagPill',
-        useCases: [WidgetbookUseCase(name: 'Tag Pill', builder: tagPill)],
-      ),
-      WidgetbookComponent(
-        name: 'GlyphAvailabilityBadge',
-        useCases: [
-          WidgetbookUseCase(
-            name: 'Availability Badge',
-            builder: availabilityBadge,
-          ),
-        ],
-      ),
-      WidgetbookComponent(
-        name: 'GlyphColorBadge',
-        useCases: [
-          WidgetbookUseCase(name: 'Color Badges', builder: colorBadges),
-        ],
-      ),
-      WidgetbookComponent(
-        name: 'GlyphAvatar',
-        useCases: [
-          WidgetbookUseCase(name: 'Initials', builder: avatarInitials),
-          WidgetbookUseCase(name: 'Colored Initials', builder: avatarColored),
-          WidgetbookUseCase(name: 'Multiple Sizes', builder: avatarSizes),
-        ],
+        name: 'GlyphBadge',
+        useCases: [WidgetbookUseCase(name: 'All Styles', builder: badgeStyles)],
       ),
       WidgetbookComponent(
         name: 'GlyphBreadcrumbs',
@@ -143,6 +111,12 @@ final directories = [
         name: 'GlyphNotificationDot',
         useCases: [
           WidgetbookUseCase(name: 'Notification Dot', builder: notificationDot),
+        ],
+      ),
+      WidgetbookComponent(
+        name: 'GlyphDropdown',
+        useCases: [
+          .new(name: 'Dropdown', builder: dropdownUseCase),
         ],
       ),
       WidgetbookComponent(
