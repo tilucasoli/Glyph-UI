@@ -11,6 +11,11 @@ Widget buttonUseCase(BuildContext context) {
     options: ['filled', 'stroke', 'ghost'],
     labelBuilder: (v) => v,
   );
+  final size = context.knobs.object.dropdown<String>(
+    label: 'Size',
+    options: ['medium', 'small', 'xsmall'],
+    labelBuilder: (v) => v,
+  );
   final expand = context.knobs.boolean(label: 'Expand', initialValue: false);
   final isLoading = context.knobs.boolean(
     label: 'Loading',
@@ -34,6 +39,7 @@ Widget buttonUseCase(BuildContext context) {
       label: label,
       onPressed: (isLoading || disabled) ? null : () {},
       style: _styleFrom(variant),
+      metrics: _buttonMetricsFrom(size),
       expand: expand,
       loading: isLoading,
       leadingIcon: showLeadingIcon
@@ -55,6 +61,11 @@ Widget iconButtonUseCase(BuildContext context) {
     options: ['stroke', 'filled', 'ghost'],
     labelBuilder: (v) => v,
   );
+  final size = context.knobs.object.dropdown<String>(
+    label: 'Size',
+    options: ['medium', 'small', 'xsmall'],
+    labelBuilder: (v) => v,
+  );
   final semanticLabel = context.knobs.string(
     label: 'Semantic label',
     initialValue: 'Search',
@@ -74,6 +85,7 @@ Widget iconButtonUseCase(BuildContext context) {
       onPressed: disabled ? null : () {},
       semanticLabel: semanticLabel,
       style: _iconButtonStyleFrom(variant),
+      metrics: _iconButtonMetricsFrom(size),
       tooltip: tooltip.isEmpty ? null : tooltip,
     ),
   );
@@ -87,11 +99,27 @@ GlyphButtonStyle _styleFrom(String value) {
   };
 }
 
+GlyphButtonMetrics _buttonMetricsFrom(String value) {
+  return switch (value) {
+    'small' => .small(),
+    'xsmall' => .xsmall(),
+    _ => .medium(),
+  };
+}
+
 GlyphIconButtonStyle _iconButtonStyleFrom(String value) {
   return switch (value) {
     'stroke' => .stroke(),
     'ghost' => .ghost(),
     _ => .filled(),
+  };
+}
+
+GlyphIconButtonMetrics _iconButtonMetricsFrom(String value) {
+  return switch (value) {
+    'small' => .small(),
+    'xsmall' => .xsmall(),
+    _ => .medium(),
   };
 }
 

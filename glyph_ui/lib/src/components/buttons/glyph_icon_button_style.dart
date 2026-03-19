@@ -2,6 +2,12 @@ import 'package:flutter/widgets.dart';
 
 import '../../tokens/glyph_colors.dart';
 
+/// Visual style for [GlyphIconButton].
+///
+/// State-dependent properties use [WidgetStateProperty] and are resolved
+/// against the button's internal [WidgetStatesController].
+/// Dimensional metrics (button size, icon size) live in
+/// [GlyphIconButtonMetrics].
 @immutable
 final class GlyphIconButtonStyle {
   const GlyphIconButtonStyle({
@@ -9,8 +15,6 @@ final class GlyphIconButtonStyle {
     required this.foregroundColor,
     required this.side,
     required this.shape,
-    required this.buttonSize,
-    required this.iconSize,
     this.animationDuration = const .new(milliseconds: 150),
     this.animationCurve = Curves.easeOut,
   });
@@ -19,9 +23,6 @@ final class GlyphIconButtonStyle {
   final WidgetStateProperty<Color> foregroundColor;
   final WidgetStateProperty<BorderSide> side;
   final WidgetStateProperty<OutlinedBorder> shape;
-
-  final double buttonSize;
-  final double iconSize;
   final Duration animationDuration;
   final Curve animationCurve;
 
@@ -47,8 +48,6 @@ final class GlyphIconButtonStyle {
       }),
       side: .all(.none),
       shape: .all(RoundedRectangleBorder(borderRadius: .circular(10))),
-      buttonSize: 44,
-      iconSize: 20,
     );
   }
 
@@ -72,8 +71,6 @@ final class GlyphIconButtonStyle {
       }),
       side: .all(const BorderSide(color: GlyphColors.borderMedium)),
       shape: .all(RoundedRectangleBorder(borderRadius: .circular(8))),
-      buttonSize: 44,
-      iconSize: 20,
     );
   }
 
@@ -97,8 +94,6 @@ final class GlyphIconButtonStyle {
       }),
       side: .all(.none),
       shape: .all(RoundedRectangleBorder(borderRadius: .circular(8))),
-      buttonSize: 44,
-      iconSize: 20,
     );
   }
 
@@ -107,8 +102,6 @@ final class GlyphIconButtonStyle {
     WidgetStateProperty<Color>? foregroundColor,
     WidgetStateProperty<BorderSide>? side,
     WidgetStateProperty<OutlinedBorder>? shape,
-    double? buttonSize,
-    double? iconSize,
     Duration? animationDuration,
     Curve? animationCurve,
   }) {
@@ -117,8 +110,6 @@ final class GlyphIconButtonStyle {
       foregroundColor: foregroundColor ?? this.foregroundColor,
       side: side ?? this.side,
       shape: shape ?? this.shape,
-      buttonSize: buttonSize ?? this.buttonSize,
-      iconSize: iconSize ?? this.iconSize,
       animationDuration: animationDuration ?? this.animationDuration,
       animationCurve: animationCurve ?? this.animationCurve,
     );

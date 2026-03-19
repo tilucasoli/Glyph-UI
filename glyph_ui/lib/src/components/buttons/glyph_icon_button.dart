@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'glyph_icon_button_metrics.dart';
 import 'glyph_icon_button_style.dart';
 
 final class GlyphIconButton extends StatefulWidget {
@@ -9,6 +10,7 @@ final class GlyphIconButton extends StatefulWidget {
     required this.onPressed,
     required this.semanticLabel,
     required this.style,
+    this.metrics,
     this.tooltip,
   });
 
@@ -16,6 +18,7 @@ final class GlyphIconButton extends StatefulWidget {
   final VoidCallback? onPressed;
   final String semanticLabel;
   final GlyphIconButtonStyle style;
+  final GlyphIconButtonMetrics? metrics;
   final String? tooltip;
 
   @override
@@ -31,13 +34,13 @@ class _GlyphIconButtonState extends State<GlyphIconButton> {
   void initState() {
     super.initState();
     _controller.addListener(() => setState(() {}));
-    _controller.update(WidgetState.disabled, _isDisabled);
+    _controller.update(.disabled, _isDisabled);
   }
 
   @override
   void didUpdateWidget(covariant GlyphIconButton oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _controller.update(WidgetState.disabled, _isDisabled);
+    _controller.update(.disabled, _isDisabled);
   }
 
   @override
@@ -47,34 +50,35 @@ class _GlyphIconButtonState extends State<GlyphIconButton> {
   }
 
   void _onTapDown(TapDownDetails _) {
-    _controller.update(WidgetState.pressed, true);
+    _controller.update(.pressed, true);
   }
 
   void _onTapUp(TapUpDetails _) {
-    _controller.update(WidgetState.pressed, false);
+    _controller.update(.pressed, false);
     widget.onPressed?.call();
   }
 
   void _onTapCancel() {
-    _controller.update(WidgetState.pressed, false);
+    _controller.update(.pressed, false);
   }
 
   @override
   Widget build(BuildContext context) {
     final style = widget.style;
+    final metrics = widget.metrics ?? GlyphIconButtonMetrics.medium();
     final states = _controller.value;
 
     Widget result = Semantics(
       button: true,
       label: widget.semanticLabel,
       child: Focus(
-        onFocusChange: (focused) =>
-            _controller.update(WidgetState.focused, focused),
+        onFocusChange: (focused) => _controller.update(.focused, focused),
         child: MouseRegion(
-          cursor:
-              _isDisabled ? SystemMouseCursors.basic : SystemMouseCursors.click,
-          onEnter: (_) => _controller.update(WidgetState.hovered, true),
-          onExit: (_) => _controller.update(WidgetState.hovered, false),
+          cursor: _isDisabled
+              ? SystemMouseCursors.basic
+              : SystemMouseCursors.click,
+          onEnter: (_) => _controller.update(.hovered, true),
+          onExit: (_) => _controller.update(.hovered, false),
           child: GestureDetector(
             onTapDown: _isDisabled ? null : _onTapDown,
             onTapUp: _isDisabled ? null : _onTapUp,
@@ -83,18 +87,18 @@ class _GlyphIconButtonState extends State<GlyphIconButton> {
             child: AnimatedContainer(
               duration: style.animationDuration,
               curve: style.animationCurve,
-              width: style.buttonSize,
-              height: style.buttonSize,
+              width: metrics.buttonSize,
+              height: metrics.buttonSize,
               decoration: ShapeDecoration(
                 color: style.backgroundColor.resolve(states),
-                shape: style.shape.resolve(states).copyWith(
-                  side: style.side.resolve(states),
-                ),
+                shape: style.shape
+                    .resolve(states)
+                    .copyWith(side: style.side.resolve(states)),
               ),
               alignment: .center,
               child: IconTheme(
                 data: IconThemeData(
-                  size: style.iconSize,
+                  size: metrics.iconSize,
                   color: style.foregroundColor.resolve(states),
                 ),
                 child: widget.icon,

@@ -1,8 +1,13 @@
 import 'package:flutter/widgets.dart';
 
 import '../../tokens/glyph_colors.dart';
-import '../../tokens/glyph_typography.dart';
 
+/// Visual style for [GlyphButton].
+///
+/// State-dependent properties use [WidgetStateProperty] and are resolved
+/// against the button's internal [WidgetStatesController].
+/// Dimensional metrics (padding, height, icon sizing) live in
+/// [GlyphButtonMetrics].
 @immutable
 final class GlyphButtonStyle {
   const GlyphButtonStyle({
@@ -10,11 +15,6 @@ final class GlyphButtonStyle {
     required this.foregroundColor,
     required this.side,
     required this.shape,
-    required this.padding,
-    required this.minHeight,
-    required this.labelTextStyle,
-    required this.iconSize,
-    required this.iconGap,
     this.animationDuration = const .new(milliseconds: 150),
     this.animationCurve = Curves.easeOut,
   });
@@ -23,12 +23,6 @@ final class GlyphButtonStyle {
   final WidgetStateProperty<Color> foregroundColor;
   final WidgetStateProperty<BorderSide> side;
   final WidgetStateProperty<OutlinedBorder> shape;
-
-  final EdgeInsets padding;
-  final double minHeight;
-  final TextStyle labelTextStyle;
-  final double iconSize;
-  final double iconGap;
   final Duration animationDuration;
   final Curve animationCurve;
 
@@ -54,11 +48,6 @@ final class GlyphButtonStyle {
       }),
       side: .all(.none),
       shape: .all(RoundedRectangleBorder(borderRadius: .circular(10))),
-      padding: const .symmetric(vertical: 18, horizontal: 24),
-      minHeight: 46,
-      labelTextStyle: GlyphTextStyles.small,
-      iconSize: 16,
-      iconGap: 6,
     );
   }
 
@@ -82,11 +71,6 @@ final class GlyphButtonStyle {
       }),
       side: .all(const BorderSide(color: GlyphColors.borderMedium)),
       shape: .all(RoundedRectangleBorder(borderRadius: .circular(8))),
-      padding: const .symmetric(vertical: 18, horizontal: 24),
-      minHeight: 46,
-      labelTextStyle: GlyphTextStyles.small,
-      iconSize: 16,
-      iconGap: 6,
     );
   }
 
@@ -110,11 +94,6 @@ final class GlyphButtonStyle {
       }),
       side: .all(.none),
       shape: .all(RoundedRectangleBorder(borderRadius: .circular(8))),
-      padding: const .symmetric(vertical: 18, horizontal: 24),
-      minHeight: 46,
-      labelTextStyle: GlyphTextStyles.small,
-      iconSize: 16,
-      iconGap: 6,
     );
   }
 
@@ -123,11 +102,6 @@ final class GlyphButtonStyle {
     WidgetStateProperty<Color>? foregroundColor,
     WidgetStateProperty<BorderSide>? side,
     WidgetStateProperty<OutlinedBorder>? shape,
-    EdgeInsets? padding,
-    double? minHeight,
-    TextStyle? labelTextStyle,
-    double? iconSize,
-    double? iconGap,
     Duration? animationDuration,
     Curve? animationCurve,
   }) {
@@ -136,11 +110,6 @@ final class GlyphButtonStyle {
       foregroundColor: foregroundColor ?? this.foregroundColor,
       side: side ?? this.side,
       shape: shape ?? this.shape,
-      padding: padding ?? this.padding,
-      minHeight: minHeight ?? this.minHeight,
-      labelTextStyle: labelTextStyle ?? this.labelTextStyle,
-      iconSize: iconSize ?? this.iconSize,
-      iconGap: iconGap ?? this.iconGap,
       animationDuration: animationDuration ?? this.animationDuration,
       animationCurve: animationCurve ?? this.animationCurve,
     );
