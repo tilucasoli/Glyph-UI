@@ -27,9 +27,7 @@ class GlyphWidgetbookApp extends StatelessWidget {
       directories: directories,
       addons: [
         MaterialThemeAddon(
-          themes: [
-            WidgetbookTheme(name: 'Light', data: GlyphTheme.light()),
-          ],
+          themes: [WidgetbookTheme(name: 'Light', data: GlyphTheme.light())],
         ),
       ],
     );
@@ -43,21 +41,13 @@ final directories = [
     name: 'Components',
     children: [
       WidgetbookComponent(
-        name: 'GlyphButton',
-        useCases: [
-          WidgetbookUseCase(name: 'Primary', builder: primaryButton),
-          WidgetbookUseCase(name: 'Primary Compact', builder: primaryButtonCompact),
-          WidgetbookUseCase(name: 'Primary Loading', builder: primaryButtonLoading),
-          WidgetbookUseCase(name: 'Primary Disabled', builder: primaryButtonDisabled),
-          WidgetbookUseCase(name: 'Action', builder: actionButton),
-          WidgetbookUseCase(name: 'Action Without Icon', builder: actionButtonNoIcon),
-          WidgetbookUseCase(name: 'Ghost', builder: ghostButton),
-        ],
+        name: 'Button',
+        useCases: [WidgetbookUseCase(name: 'Button', builder: buttonUseCase)],
       ),
       WidgetbookComponent(
-        name: 'GlyphIconButton',
+        name: 'Icon Button',
         useCases: [
-          WidgetbookUseCase(name: 'Icon Button', builder: iconButton),
+          WidgetbookUseCase(name: 'Icon Button', builder: iconButtonUseCase),
         ],
       ),
       WidgetbookComponent(
@@ -70,7 +60,10 @@ final directories = [
       WidgetbookComponent(
         name: 'GlyphPaymentMethodCard',
         useCases: [
-          WidgetbookUseCase(name: 'Payment Method Cards', builder: paymentMethodCards),
+          WidgetbookUseCase(
+            name: 'Payment Method Cards',
+            builder: paymentMethodCards,
+          ),
         ],
       ),
       WidgetbookComponent(
@@ -81,15 +74,11 @@ final directories = [
       ),
       WidgetbookComponent(
         name: 'Colors',
-        useCases: [
-          WidgetbookUseCase(name: 'Colors', builder: colorsToken),
-        ],
+        useCases: [WidgetbookUseCase(name: 'Colors', builder: colorsToken)],
       ),
       WidgetbookComponent(
         name: 'Spacing',
-        useCases: [
-          WidgetbookUseCase(name: 'Spacing', builder: spacingToken),
-        ],
+        useCases: [WidgetbookUseCase(name: 'Spacing', builder: spacingToken)],
       ),
       WidgetbookComponent(
         name: 'Typography',
@@ -101,7 +90,10 @@ final directories = [
         name: 'GlyphInputField',
         useCases: [
           WidgetbookUseCase(name: 'Input Field', builder: inputField),
-          WidgetbookUseCase(name: 'Input With Trailing', builder: inputFieldTrailing),
+          WidgetbookUseCase(
+            name: 'Input With Trailing',
+            builder: inputFieldTrailing,
+          ),
         ],
       ),
       WidgetbookComponent(
@@ -112,14 +104,15 @@ final directories = [
       ),
       WidgetbookComponent(
         name: 'GlyphTagPill',
-        useCases: [
-          WidgetbookUseCase(name: 'Tag Pill', builder: tagPill),
-        ],
+        useCases: [WidgetbookUseCase(name: 'Tag Pill', builder: tagPill)],
       ),
       WidgetbookComponent(
         name: 'GlyphAvailabilityBadge',
         useCases: [
-          WidgetbookUseCase(name: 'Availability Badge', builder: availabilityBadge),
+          WidgetbookUseCase(
+            name: 'Availability Badge',
+            builder: availabilityBadge,
+          ),
         ],
       ),
       WidgetbookComponent(
@@ -144,9 +137,7 @@ final directories = [
       ),
       WidgetbookComponent(
         name: 'GlyphPagination',
-        useCases: [
-          WidgetbookUseCase(name: 'Pagination', builder: pagination),
-        ],
+        useCases: [WidgetbookUseCase(name: 'Pagination', builder: pagination)],
       ),
       WidgetbookComponent(
         name: 'GlyphNotificationDot',
@@ -156,9 +147,7 @@ final directories = [
       ),
       WidgetbookComponent(
         name: 'GlyphAppBar',
-        useCases: [
-          WidgetbookUseCase(name: 'App Bar', builder: appBar),
-        ],
+        useCases: [.new(name: 'App Bar', builder: appBar)],
       ),
     ],
   ),

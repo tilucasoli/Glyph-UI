@@ -1,0 +1,21 @@
+name: glyph_ui_catalog
+description: Component catalog for the Glyph design system.
+publish_to: none
+version: 1.0.0+1
+environment:
+  sdk: 3.11.0
+dependencies:
+  flutter:
+    sdk: flutter
+  glyph_ui:
+    path: ../
+  widgetbook: ^3.22.0
+  widgetbook_annotation: ^3.11.0
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.0
+  widgetbook_generator: ^3.22.0
+flutter:
+  uses-material-design: true

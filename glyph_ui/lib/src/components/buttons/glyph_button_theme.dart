@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'glyph_button_style.dart';
 import '../../tokens/glyph_colors.dart';
 import '../../tokens/glyph_radius.dart';
+import 'glyph_button_style.dart';
 
-/// Theme extension providing [ButtonStyle]s for filled, stroke, and ghost
+/// Theme data providing [ButtonStyle]s for filled, stroke, and ghost
 /// [GlyphButtonVariant]s. Access via [GlyphButtonThemeData.of].
 @immutable
-class GlyphButtonThemeData extends ThemeExtension<GlyphButtonThemeData> {
+final class GlyphButtonThemeData extends ThemeExtension<GlyphButtonThemeData> {
   const GlyphButtonThemeData({
     required this.filledStyle,
     required this.strokeStyle,
@@ -18,22 +18,28 @@ class GlyphButtonThemeData extends ThemeExtension<GlyphButtonThemeData> {
   final ButtonStyle strokeStyle;
   final ButtonStyle ghostStyle;
 
-  /// Returns the [ButtonStyle] for the given [variant].
+  /// Returns the [ButtonStyle] for [variant].
   ButtonStyle styleFor(GlyphButtonVariant variant) {
     switch (variant) {
-      case GlyphButtonVariant.filled:
+      case .filled:
         return filledStyle;
-      case GlyphButtonVariant.stroke:
+      case .stroke:
         return strokeStyle;
-      case GlyphButtonVariant.ghost:
+      case .ghost:
         return ghostStyle;
     }
   }
 
-  /// Reads [GlyphButtonThemeData] from the current theme. Asserts if missing.
+  /// Reads [GlyphButtonThemeData] from the current [Theme].
+  ///
+  /// Throws if this extension is not found in [Theme.extensions]. In debug
+  /// mode, asserts with a message; ensure the extension is added to the theme.
   static GlyphButtonThemeData of(BuildContext context) {
     final data = Theme.of(context).extension<GlyphButtonThemeData>();
-    assert(data != null, 'GlyphButtonThemeData not found. Add it to Theme.extensions.');
+    assert(
+      data != null,
+      'GlyphButtonThemeData not found. Add it to Theme.extensions.',
+    );
     return data!;
   }
 
@@ -51,7 +57,10 @@ class GlyphButtonThemeData extends ThemeExtension<GlyphButtonThemeData> {
   }
 
   @override
-  GlyphButtonThemeData lerp(ThemeExtension<GlyphButtonThemeData>? other, double t) {
+  GlyphButtonThemeData lerp(
+    ThemeExtension<GlyphButtonThemeData>? other,
+    double t,
+  ) {
     return this;
   }
 
@@ -71,78 +80,84 @@ const Color _accentSolidPressed = Color(0xFF080808);
 
 ButtonStyle _buildFilledStyle() {
   return ButtonStyle(
-    elevation: WidgetStatePropertyAll<double>(0),
-    backgroundColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+    elevation: .all(0),
+    backgroundColor: .resolveWith((states) {
       if (states.contains(WidgetState.disabled)) return GlyphColors.borderLight;
       if (states.contains(WidgetState.pressed)) return _accentSolidPressed;
       if (states.contains(WidgetState.hovered)) return _accentSolidHover;
       return GlyphColors.accentSolid;
     }),
-    foregroundColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-      if (states.contains(WidgetState.disabled)) return GlyphColors.textTertiary;
+    foregroundColor: .resolveWith((states) {
+      if (states.contains(WidgetState.disabled))
+        return GlyphColors.textTertiary;
       return GlyphColors.accentSolidText;
     }),
-    side: const WidgetStatePropertyAll<BorderSide>(BorderSide.none),
-    overlayColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-      if (states.contains(WidgetState.focused)) return GlyphColors.accentBlue.withValues(alpha: 0.2);
+    side: .all(BorderSide.none),
+    overlayColor: .resolveWith((states) {
+      if (states.contains(WidgetState.focused))
+        return GlyphColors.accentBlue.withValues(alpha: 0.2);
       return null;
     }),
-    shape: WidgetStatePropertyAll<OutlinedBorder>(
-      RoundedRectangleBorder(borderRadius: GlyphRadius.borderMd),
-    ),
+    shape: .all(RoundedRectangleBorder(borderRadius: .circular(10))),
   );
 }
 
 ButtonStyle _buildStrokeStyle() {
   return ButtonStyle(
-    elevation: WidgetStatePropertyAll<double>(0),
-    backgroundColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+    elevation: .all(0),
+    backgroundColor: .resolveWith((states) {
       if (states.contains(WidgetState.disabled)) return GlyphColors.borderLight;
       if (states.contains(WidgetState.pressed)) return GlyphColors.borderMedium;
       if (states.contains(WidgetState.hovered)) return GlyphColors.bgBody;
       return GlyphColors.bgSurface;
     }),
-    foregroundColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-      if (states.contains(WidgetState.disabled)) return GlyphColors.textTertiary;
+    foregroundColor: .resolveWith((states) {
+      if (states.contains(WidgetState.disabled))
+        return GlyphColors.textTertiary;
       return GlyphColors.textPrimary;
     }),
-    side: WidgetStateProperty.resolveWith<BorderSide?>((Set<WidgetState> states) {
+    side: .resolveWith((states) {
       if (states.contains(WidgetState.focused)) {
         return const BorderSide(color: GlyphColors.accentBlue, width: 1);
       }
       return const BorderSide(color: GlyphColors.borderMedium, width: 1);
     }),
-    overlayColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-      if (states.contains(WidgetState.focused)) return GlyphColors.accentBlue.withValues(alpha: 0.15);
+    overlayColor: .resolveWith((states) {
+      if (states.contains(WidgetState.focused))
+        return GlyphColors.accentBlue.withValues(alpha: 0.15);
       return null;
     }),
-    shape: WidgetStatePropertyAll<OutlinedBorder>(
-      RoundedRectangleBorder(borderRadius: GlyphRadius.borderMd),
-    ),
+    shape: .all(RoundedRectangleBorder(borderRadius: .circular(8))),
   );
 }
 
 ButtonStyle _buildGhostStyle() {
   return ButtonStyle(
-    elevation: WidgetStatePropertyAll<double>(0),
-    backgroundColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+    elevation: .all(0),
+    backgroundColor: .resolveWith((states) {
       if (states.contains(WidgetState.disabled)) return GlyphColors.borderLight;
-      if (states.contains(WidgetState.pressed) || states.contains(WidgetState.hovered)) {
+      if (states.contains(WidgetState.pressed) ||
+          states.contains(WidgetState.hovered)) {
         return GlyphColors.bgBody;
       }
       return Colors.transparent;
     }),
-    foregroundColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-      if (states.contains(WidgetState.disabled)) return GlyphColors.textTertiary;
+    foregroundColor: .resolveWith((states) {
+      if (states.contains(WidgetState.disabled))
+        return GlyphColors.textTertiary;
       return GlyphColors.textPrimary;
     }),
-    side: const WidgetStatePropertyAll<BorderSide>(BorderSide.none),
-    overlayColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-      if (states.contains(WidgetState.focused)) return GlyphColors.accentBlue.withValues(alpha: 0.15);
+    iconColor: .resolveWith((states) {
+      if (states.contains(WidgetState.disabled))
+        return GlyphColors.textTertiary;
+      return GlyphColors.textPrimary;
+    }),
+    side: .all(.none),
+    overlayColor: .resolveWith((states) {
+      if (states.contains(WidgetState.focused))
+        return GlyphColors.accentBlue.withValues(alpha: 0.15);
       return null;
     }),
-    shape: WidgetStatePropertyAll<OutlinedBorder>(
-      RoundedRectangleBorder(borderRadius: GlyphRadius.borderMd),
-    ),
+    shape: .all(RoundedRectangleBorder(borderRadius: .circular(8))),
   );
 }

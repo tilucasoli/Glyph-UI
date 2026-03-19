@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Semantic color naming — dashboard map</title>
+  <style>
+    :root {
+      --bg-canvas: #F9FAFB;
+      --bg-surface: #fff;
+      --border: #E5E5E5;
+      --text-primary: #111;
+      --text-secondary: #6B7280;
+      --success: #10B981;
+      --success-surface: #D1FAE5;
+      --warning: #F59E0B;
+      --warning-surface: #FEF3C7;
+      --neutral: #6B7280;
+      --neutral-surface: #F3F4F6;
+      --primary: #5C61E6;
+      --primary-surface: #EEF2FF;
+      --tag-vip: #7C3AED;
+      --tag-vip-bg: #EDE9FE;
+      --tag-general: #2563EB;
+      --tag-general-bg: #DBEAFE;
+      --tag-early: #EA580C;
+      --tag-early-bg: #FFEDD5;
+    }
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; background: var(--bg-canvas); margin: 0; padding: 24px; color: var(--text-primary); }
+    h1 { font-size: 1.25rem; margin: 0 0 8px 0; }
+    .subtitle { color: var(--text-secondary); font-size: 0.875rem; margin: 0 0 24px 0; }
+    .dashboard { display: flex; gap: 24px; max-width: 1000px; }
+    .sidebar { width: 200px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+    .sidebar .nav-item { padding: 8px 12px; margin: 2px 0; border-radius: 6px; font-size: 0.875rem; color: var(--text-secondary); }
+    .sidebar .nav-item.active { background: var(--neutral-surface); color: var(--primary); font-weight: 500; }
+    .main { flex: 1; }
+    .card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+    .card h2 { font-size: 1rem; margin: 0 0 16px 0; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+    .badge-success { background: var(--success-surface); color: var(--success); }
+    .badge-warning { background: var(--warning-surface); color: var(--warning); }
+    .badge-neutral { background: var(--neutral-surface); color: var(--neutral); }
+    .badge-tag-vip { background: var(--tag-vip-bg); color: var(--tag-vip); }
+    .badge-tag-general { background: var(--tag-general-bg); color: var(--tag-general); }
+    .badge-tag-early { background: var(--tag-early-bg); color: var(--tag-early); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    th { text-align: left; padding: 8px 12px; color: var(--text-secondary); font-weight: 500; border-bottom: 1px solid var(--border); }
+    td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+    .callout { font-size: 0.7rem; color: var(--text-secondary); margin-top: 4px; font-family: ui-monospace, monospace; }
+    .progress { height: 8px; background: var(--neutral-surface); border-radius: 4px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--primary); border-radius: 4px; width: 80%; }
+    .progress-fill.sold-out { width: 100%; background: var(--neutral); }
+    .btn-primary { background: var(--text-primary); color: #fff; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 500; cursor: pointer; }
+    .btn-secondary { background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border); padding: 10px 16px; border-radius: 8px; margin-left: 8px; cursor: pointer; }
+    .toggle { width: 44px; height: 24px; background: var(--primary); border-radius: 12px; }
+    .toggle.off { background: var(--neutral); }
+    .legend { margin-top: 32px; padding: 20px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; font-size: 0.875rem; }
+    .legend h3 { margin: 0 0 12px 0; font-size: 1rem; }
+    .legend dl { margin: 0; display: grid; gap: 8px; }
+    .legend dt { font-family: ui-monospace, monospace; color: var(--primary); }
+    .legend dd { margin: 0 0 0 1rem; color: var(--text-secondary); }
+  </style>
+</head>
+<body>
+  <h1>Semantic color naming — dashboard map</h1>
+  <p class="subtitle">Where each color is used and how we can name it in the design system.</p>
+
+  <div class="dashboard">
+    <aside class="sidebar">
+      <div class="nav-item">Dashboard</div>
+      <div class="nav-item active">Event Details</div>
+      <div class="nav-item">Tickets</div>
+      <div class="nav-item">Attendees</div>
+    </aside>
+    <div class="main">
+      <div class="card">
+        <h2>Header</h2>
+        <span class="badge badge-success">● Live</span>
+        <span class="callout">statusSuccess / statusSuccessSurface</span>
+      </div>
+      <div class="card">
+        <h2>Tickets</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Ticket</th>
+              <th>Availability</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge badge-tag-vip">VIP</span><span class="callout">tagVip / tagVipSurface (categorical)</span></td>
+              <td><div class="progress"><div class="progress-fill"></div></div><span class="callout">primary / neutral (fill vs track)</span></td>
+              <td><div class="toggle"></div> Active</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-tag-general">General</span><span class="callout">tagGeneral / tagGeneralSurface</span></td>
+              <td><div class="progress"><div class="progress-fill"></div></div></td>
+              <td><div class="toggle"></div></td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-tag-early">Early Bird</span><span class="callout">tagEarlyBird / tagEarlyBirdSurface</span></td>
+              <td><div class="progress"><div class="progress-fill sold-out"></div></div> Sold out</td>
+              <td><div class="toggle off"></div><span class="callout">statusNeutral / stateDisabled</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <button class="btn-primary">+ Create Ticket</button>
+        <button class="btn-secondary">Export</button>
+        <span class="callout">actionPrimary / actionSecondary</span>
+      </div>
+      <div class="card">
+        <h2>Attendees</h2>
+        <table>
+          <tr>
+            <td>Jane Doe</td>
+            <td><span class="badge badge-tag-vip">VIP Access</span></td>
+            <td><span class="badge badge-success">✓ Paid</span><span class="callout">statusSuccess</span></td>
+          </tr>
+          <tr>
+            <td>John Smith</td>
+            <td><span class="badge badge-tag-general">General</span></td>
+            <td><span class="badge badge-warning">◷ Pending</span><span class="callout">statusWarning / statusWarningSurface</span></td>
+          </tr>
+          <tr>
+            <td>Alex Lee</td>
+            <td><span class="badge badge-tag-early">Early Bird</span></td>
+            <td><span class="badge badge-neutral">✕ Refunded</span><span class="callout">statusNeutral / statusMuted</span></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <section class="legend">
+    <h3>Naming categories (for discussion)</h3>
+    <dl>
+      <dt>statusSuccess / statusSuccessSurface</dt>
+      <dd>Live badge, Paid — positive outcome</dd>
+      <dt>statusWarning / statusWarningSurface</dt>
+      <dd>Pending — needs attention or in progress</dd>
+      <dt>statusNeutral / statusMuted</dt>
+      <dd>Sold out, Refunded — inactive or neutral</dd>
+      <dt>tagVip, tagGeneral, tagEarlyBird (or category.*)</dt>
+      <dd>Ticket types — categorical labels, not status</dd>
+      <dt>actionPrimary / stateActive</dt>
+      <dd>Buttons, toggles on, progress fill — interactive emphasis</dd>
+    </dl>
+  </section>
+</body>
+</html>

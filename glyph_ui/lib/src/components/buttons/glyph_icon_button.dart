@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
+import '../../tokens/glyph_colors.dart';
 import 'glyph_button_style.dart';
 import 'glyph_button_theme.dart';
 
-/// Icon-only button that uses [GlyphButtonThemeData] for styling and supports
-/// variant, size, optional [style] override, and optional [tooltip].
+/// An icon-only button styled via [GlyphButtonThemeData] with [variant], [size],
+/// optional [style] override, and optional [tooltip].
 ///
-/// Resolves [ButtonStyle] from [GlyphButtonThemeData.styleFor], merges optional
-/// [style], then applies size metrics (square [GlyphButtonStyleMetrics.iconButtonSize],
+/// Resolves [ButtonStyle] from [GlyphButtonThemeData.styleFor], merges [style],
+/// then applies size metrics (square [GlyphButtonStyleMetrics.iconButtonSize],
 /// [GlyphButtonStyleMetrics.iconButtonIconSize] for the icon). Uses [FilledButton]
-/// for focus/hover behavior.
+/// for focus and hover behavior.
 ///
 /// ```dart
 /// GlyphIconButton(
@@ -19,7 +20,7 @@ import 'glyph_button_theme.dart';
 ///   tooltip: 'Search',
 /// )
 /// ```
-class GlyphIconButton extends StatelessWidget {
+final class GlyphIconButton extends StatelessWidget {
   const GlyphIconButton({
     super.key,
     required this.icon,
@@ -47,12 +48,15 @@ class GlyphIconButton extends StatelessWidget {
 
     final metrics = GlyphButtonStyleMetrics.forSize(size);
     final sizeOverrides = ButtonStyle(
-      padding: const WidgetStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.zero),
-      minimumSize: WidgetStatePropertyAll<Size>(
-        Size(metrics.iconButtonSize, metrics.iconButtonSize),
-      ),
+      padding: .all(.zero),
+      minimumSize: .all(Size(metrics.iconButtonSize, metrics.iconButtonSize)),
     );
     final finalStyle = resolved.merge(sizeOverrides);
+
+    final isDisabled = onPressed == null;
+    final iconColor = resolved.foregroundColor
+            ?.resolve(isDisabled ? const {MaterialState.disabled} : {}) ??
+        (isDisabled ? GlyphColors.textTertiary : null);
 
     final button = Semantics(
       button: true,
@@ -61,17 +65,17 @@ class GlyphIconButton extends StatelessWidget {
         style: finalStyle,
         onPressed: onPressed,
         child: IconTheme(
-          data: IconThemeData(size: metrics.iconButtonIconSize),
+          data: IconThemeData(
+            size: metrics.iconButtonIconSize,
+            color: iconColor,
+          ),
           child: icon,
         ),
       ),
     );
 
     if (tooltip != null && tooltip!.isNotEmpty) {
-      return Tooltip(
-        message: tooltip!,
-        child: button,
-      );
+      return Tooltip(message: tooltip!, child: button);
     }
     return button;
   }

@@ -4,12 +4,13 @@ import '../../tokens/glyph_colors.dart';
 import 'glyph_button_style.dart';
 import 'glyph_button_theme.dart';
 
-/// Unified text button with variant, size, optional leading/trailing icons,
-/// and loading state. Uses [ButtonStyleButton] for focus/hover behavior.
+/// A unified text button with [variant], [size], optional [leadingIcon] and
+/// [trailingIcon], and [loading] state. Uses [ButtonStyleButton] for focus
+/// and hover behavior.
 ///
 /// Resolves [ButtonStyle] from [GlyphButtonThemeData.styleFor] and optional
 /// [style] override, then merges size metrics (padding, minimumSize, textStyle).
-class GlyphButton extends StatelessWidget {
+final class GlyphButton extends StatelessWidget {
   const GlyphButton({
     super.key,
     required this.label,
@@ -20,7 +21,7 @@ class GlyphButton extends StatelessWidget {
     this.leadingIcon,
     this.trailingIcon,
     this.expand = false,
-    this.isLoading = false,
+    this.loading = false,
   });
 
   final String label;
@@ -31,7 +32,7 @@ class GlyphButton extends StatelessWidget {
   final Widget? leadingIcon;
   final Widget? trailingIcon;
   final bool expand;
-  final bool isLoading;
+  final bool loading;
 
   @override
   Widget build(BuildContext context) {
@@ -41,54 +42,48 @@ class GlyphButton extends StatelessWidget {
 
     final metrics = GlyphButtonStyleMetrics.forSize(size);
     final sizeOverrides = ButtonStyle(
-      padding: WidgetStatePropertyAll<EdgeInsetsGeometry>(metrics.padding),
-      minimumSize: WidgetStatePropertyAll<Size>(
-        Size(expand ? double.infinity : 0, metrics.minHeight),
-      ),
-      textStyle: WidgetStatePropertyAll<TextStyle>(metrics.labelTextStyle),
+      padding: .all(metrics.padding),
+      minimumSize: .all(Size(expand ? .infinity : 0, metrics.minHeight)),
+      textStyle: .all(metrics.labelTextStyle),
+      iconSize: .all(metrics.iconSize),
     );
     final finalStyle = resolved.merge(sizeOverrides);
 
-    final iconColor = resolved.foregroundColor?.resolve(
-          isLoading ? const {WidgetState.disabled} : const <WidgetState>{},
-        ) ??
-        (isLoading ? GlyphColors.textTertiary : GlyphColors.textPrimary);
+    final loadingIndicator = SizedBox(
+      width: metrics.iconSize,
+      height: metrics.iconSize,
+      child: CircularProgressIndicator(
+        strokeWidth: 2,
+        color:
+            resolved.foregroundColor?.resolve({.disabled}) ??
+            GlyphColors.textTertiary,
+      ),
+    );
 
-    final content = isLoading
-        ? SizedBox(
-            width: metrics.iconSize,
-            height: metrics.iconSize,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: iconColor,
-            ),
-          )
-        : Row(
-            mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (leadingIcon != null) ...[
-                IconTheme(
-                  data: IconThemeData(size: metrics.iconSize, color: iconColor),
-                  child: leadingIcon!,
-                ),
-                const SizedBox(width: 8),
-              ],
-              Text(label),
-              if (trailingIcon != null) ...[
-                const SizedBox(width: 8),
-                IconTheme(
-                  data: IconThemeData(size: metrics.iconSize, color: iconColor),
-                  child: trailingIcon!,
-                ),
-              ],
-            ],
-          );
+    final content = Row(
+      mainAxisSize: expand ? .max : .min,
+      mainAxisAlignment: .center,
+      spacing: metrics.iconGap,
+      children: [
+        if (leadingIcon != null) leadingIcon!,
+        Text(
+          label,
+          strutStyle: const .new(forceStrutHeight: true, height: 1.05),
+        ),
+        if (trailingIcon != null) trailingIcon!,
+      ],
+    );
 
     return FilledButton(
       style: finalStyle,
-      onPressed: isLoading ? null : onPressed,
-      child: content,
+      onPressed: loading ? null : onPressed,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Opacity(opacity: !loading ? 1 : 0, child: content),
+          Visibility(visible: loading, child: loadingIndicator),
+        ],
+      ),
     );
   }
 }
