@@ -57,7 +57,7 @@ class GlyphAppBar extends StatelessWidget {
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: GlyphColors.borderLight)),
       ),
-      alignment: .center,
+      alignment: Alignment.center,
       constraints: const BoxConstraints(minHeight: 70),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
