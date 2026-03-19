@@ -11,11 +11,6 @@ Widget buttonUseCase(BuildContext context) {
     options: ['filled', 'stroke', 'ghost'],
     labelBuilder: (v) => v,
   );
-  final size = context.knobs.object.dropdown<String>(
-    label: 'Size',
-    options: ['xsmall', 'small', 'medium'],
-    labelBuilder: (v) => v,
-  );
   final expand = context.knobs.boolean(label: 'Expand', initialValue: false);
   final isLoading = context.knobs.boolean(
     label: 'Loading',
@@ -38,8 +33,7 @@ Widget buttonUseCase(BuildContext context) {
     child: GlyphButton(
       label: label,
       onPressed: (isLoading || disabled) ? null : () {},
-      variant: _variantFrom(variant),
-      size: _sizeFrom(size),
+      style: _styleFrom(variant),
       expand: expand,
       loading: isLoading,
       leadingIcon: showLeadingIcon
@@ -61,11 +55,6 @@ Widget iconButtonUseCase(BuildContext context) {
     options: ['stroke', 'filled', 'ghost'],
     labelBuilder: (v) => v,
   );
-  final size = context.knobs.object.dropdown<String>(
-    label: 'Size',
-    options: ['xsmall', 'small', 'medium'],
-    labelBuilder: (v) => v,
-  );
   final semanticLabel = context.knobs.string(
     label: 'Semantic label',
     initialValue: 'Search',
@@ -84,26 +73,25 @@ Widget iconButtonUseCase(BuildContext context) {
       icon: Icon(_iconFor(semanticLabel)),
       onPressed: disabled ? null : () {},
       semanticLabel: semanticLabel,
-      variant: _variantFrom(variant),
-      size: _sizeFrom(size),
+      style: _iconButtonStyleFrom(variant),
       tooltip: tooltip.isEmpty ? null : tooltip,
     ),
   );
 }
 
-GlyphButtonVariant _variantFrom(String value) {
+GlyphButtonStyle _styleFrom(String value) {
   return switch (value) {
-    'stroke' => GlyphButtonVariant.stroke,
-    'ghost' => GlyphButtonVariant.ghost,
-    _ => GlyphButtonVariant.filled,
+    'stroke' => .stroke(),
+    'ghost' => .ghost(),
+    _ => .filled(),
   };
 }
 
-GlyphButtonSize _sizeFrom(String value) {
+GlyphIconButtonStyle _iconButtonStyleFrom(String value) {
   return switch (value) {
-    'xsmall' => GlyphButtonSize.xsmall,
-    'small' => GlyphButtonSize.small,
-    _ => GlyphButtonSize.medium,
+    'stroke' => .stroke(),
+    'ghost' => .ghost(),
+    _ => .filled(),
   };
 }
 

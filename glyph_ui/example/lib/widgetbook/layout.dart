@@ -9,7 +9,7 @@ Widget appBar(BuildContext context) {
     actions: [
       GlyphButton(
         label: 'Settings',
-        variant: GlyphButtonVariant.stroke,
+        style: .stroke(),
         leadingIcon: const Icon(Icons.settings_outlined),
         onPressed: () {},
       ),
