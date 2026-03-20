@@ -2,7 +2,7 @@
 
 **Status:** Adopted (spec). Code may still reference `GlyphColors` directly until a migration pass.
 
-**Goal:** One vocabulary for *meaning* (surfaces, content, borders, accents, feedback) that matches how Glyph components already behave, with predictable naming patterns and a clear map to `GlyphColors` and theme APIs.
+**Goal:** One vocabulary for *meaning* (background, surfaces, content, borders, accents, feedback) with predictable naming patterns and a clear map to `GlyphColors`.
 
 ---
 
@@ -12,7 +12,7 @@
 2. **Patterned names** — Groups use consistent suffixes (`Container` for feedback pairs, `surface` + modifier for layers/states).
 3. **Dart API style** — Documented canonical identifiers use **lowerCamelCase** (e.g. `borderStrong`, not `BorderStrong`).
 4. **Single source for hex** — Values stay on `GlyphColors` until a deliberate move; semantic tokens *point to* those constants.
-5. **Two reds** — Theme/destructive emphasis (`accentDanger` → `ColorScheme.error`) stays separate from semantic **critical** feedback (`statusDanger` / `statusDangerSurface`).
+5. **No tokens beyond this doc** — The catalog below is the complete set; anything else stays on `GlyphColors` until you explicitly extend the vocabulary.
 
 ---
 
@@ -21,11 +21,11 @@
 | Group | Role |
 |--------|------|
 | **background** | Outermost app canvas behind chrome. |
-| **surface** | In-app layers: default panels, subtle fills, disabled fills, optional nav/floating. |
+| **surface** | In-app layers: default, subtle, strong, floating, disabled. |
 | **content** | Text and icon foreground emphasis. |
 | **border** | Dividers and control outlines. |
-| **accent** | Brand / primary interactive color and related subtleties. |
-| **feedback** | Semantic status: success, neutral, attention, critical — each as **foreground + container** where applicable. |
+| **accent** | Primary accent and related subtleties. |
+| **feedback** | Success, neutral, and attention — each as **foreground + container** where applicable. |
 
 ---
 
@@ -35,7 +35,7 @@
 
 | Token | `GlyphColors` | Notes |
 |--------|----------------|--------|
-| `background` | `bgCanvas` | Scaffold/shell canvas (`GlyphScaffoldStyle`, etc.). |
+| `background` | `bgCanvas` | Scaffold/shell canvas. |
 
 ### Surface
 
@@ -43,10 +43,9 @@
 |--------|----------------|--------|
 | `surface` | `bgSurface` | Default card/panel/input face. |
 | `surfaceSubtle` | `bgBody` | Page/scaffold fill, hover wash on stroke-style controls. |
-| `surfaceSidebar` | `bgSidebar` | Sidebar chrome; also used as **selected** list wash (e.g. dropdown). |
-| `surfaceFloating` | `bgSurface` | Same fill as `surface` today; “floating” is expressed with shadow/radius in components. |
-| `surfaceDisabled` | `borderLight` | **Disabled fill** for filled/stroke buttons and similar — same swatch as light border today; not a separate neutral gray. If this feels misleading, alias mentally as `fillDisabled`. |
-| `surfaceStrong` | *Unassigned* | No distinct token in the palette yet; reserve for a future “highest” surface step or deprecate if light theme never needs it. |
+| `surfaceStrong` | *Unassigned* | No distinct value in the palette yet. |
+| `surfaceFloating` | `bgSurface` | Same fill as `surface` today; elevation is shape/shadow, not a separate swatch. |
+| `surfaceDisabled` | `borderLight` | Disabled fill for filled/stroke controls (same swatch as `border` today). |
 
 ### Content
 
@@ -55,7 +54,6 @@
 | `content` | `textPrimary` | Primary body and strong labels. |
 | `contentSubtle` | `textSecondary` | Supporting text, nav default, table headers. |
 | `contentDisabled` | `textTertiary` | Disabled, hints, separators, weak chrome. |
-| `onAccentPrimary` | `accentSolidText` | Foreground on solid primary accent (badges, filled buttons, `onPrimary`). |
 
 ### Border
 
@@ -63,72 +61,54 @@
 |--------|----------------|--------|
 | `border` | `borderLight` | Hairlines, dividers, soft outlines. |
 | `borderStrong` | `borderMedium` | Inputs, tables, pagination. |
-| `borderDisabled` | `borderMedium` | Disabled control outline (matches current text field behavior). Same value as `borderStrong` in light theme; separate **role** for future themes. |
-| `borderFocus` | `textPrimary` | Focus ring color used by `GlyphTextFieldStyle` / `InputDecorationTheme` today. |
+| `borderDisabled` | `borderMedium` | Disabled control outline. Same value as `borderStrong` in the light palette; separate **role** for theme overrides. |
 
 ### Accent
 
 | Token | `GlyphColors` | Notes |
 |--------|----------------|--------|
-| `accentPrimary` | `accentSolid` | Primary solid; maps to `ColorScheme.primary`. |
-| `accentPrimarySubtle` | `accentBlue` | Reserved for links, focus accents, selection — documented in palette, not yet wired through all components. |
+| `accentPrimary` | `accentSolid` | Primary solid fill. |
+| `accentPrimarySubtle` | `accentBlue` | Interactive / link / focus accent. |
 | `accentPrimaryContainer` | `accentBlueSurface` | Soft wash paired with `accentPrimarySubtle`. |
-| `accentDanger` | `accentDanger` | Destructive emphasis at theme level; maps to `ColorScheme.error`. |
 
 ### Feedback
-
-Each semantic level uses **foreground + container** where the design uses a pair (badges, alerts).
 
 | Token | `GlyphColors` | Notes |
 |--------|----------------|--------|
 | `feedbackSuccess` | `statusSuccess` | |
 | `feedbackSuccessContainer` | `statusSuccessSurface` | |
+| `feedbackNeutral` | `textSecondary` | Neutral foreground. |
+| `feedbackNeutralContainer` | `borderLight` | Neutral background — pairs with `feedbackNeutral`. |
 | `feedbackAttention` | `statusWarning` | |
 | `feedbackAttentionContainer` | `statusWarningSurface` | |
-| `feedbackCritical` | `statusDanger` | Semantic error state (badges, etc.). |
-| `feedbackCriticalContainer` | `statusDangerSurface` | |
-| `feedbackNeutral` | `textSecondary` | Foreground for neutral badge. |
-| `feedbackNeutralContainer` | `borderLight` | Background for neutral badge — **pairing**, not a unique third gray in the palette. |
 
 ---
 
 ## Theme alignment
 
-`GlyphTheme.light()` already maps a subset to `ColorScheme`:
+Where `GlyphTheme.light()` maps to `ColorScheme`, the **primitive** sources are:
 
-| `ColorScheme` field | Maps from |
-|---------------------|-----------|
-| `primary` | `accentPrimary` → `accentSolid` |
-| `onPrimary` | `onAccentPrimary` |
-| `surface` | `surface` |
-| `onSurface` | `content` |
-| `surfaceContainerLowest` | `surfaceSubtle` |
-| `secondary` | `contentSubtle` |
-| `onSecondary` | `onAccentPrimary` |
-| `outlineVariant` | `border` |
-| `outline` | `borderStrong` |
+| `ColorScheme` field | `GlyphColors` |
+|---------------------|----------------|
+| `primary` | `accentSolid` |
+| `onPrimary` | `accentSolidText` |
+| `surface` | `bgSurface` |
+| `onSurface` | `textPrimary` |
+| `surfaceContainerLowest` | `bgBody` |
+| `secondary` | `textSecondary` |
+| `onSecondary` | `accentSolidText` |
+| `outlineVariant` | `borderLight` |
+| `outline` | `borderMedium` |
 | `error` | `accentDanger` |
-| `onError` | `onAccentPrimary` |
-
-Everything else (sidebar, feedback pairs, `accentPrimarySubtle`, `borderFocus`, `surfaceDisabled`, `background`, etc.) belongs in **`GlyphColorTokens`** (or component style structs) when you expand the extension.
+| `onError` | `accentSolidText` |
 
 ---
 
 ## Usage rules (for authors)
 
-1. **Prefer theme** — Use `Theme.of(context).colorScheme` when the role matches the table above.
-2. **Use `GlyphColorTokens`** — For tokens not on `ColorScheme`, once fields exist: `context.glyphColors`.
-3. **Reserve `GlyphColors`** — For theme/token **definitions** and generated defaults, not scattered in new widget code.
-4. **Filled button hover/pressed** — Today literal `Color(0xFF0D0D0D)` / `0xFF080808`; consider promoting to named tokens later (`accentPrimaryHover` / `accentPrimaryPressed`) without blocking this spec.
-
----
-
-## Component alignment (summary)
-
-- **Buttons / icon buttons / text fields / dropdown triggers** — Share the same stroke pattern: `surface` / `surfaceSubtle` / `border` / `borderStrong` / `content` / `contentDisabled`, plus `accentPrimary` / `onAccentPrimary` for filled variants.
-- **Dropdown panel** — `surface`, `borderStrong`, `content`, `surfaceSidebar` (selected), `surfaceSubtle` (hover).
-- **Badges** — `accentPrimary` + `onAccentPrimary`; feedback pairs; neutral uses `feedbackNeutral` + `feedbackNeutralContainer`.
-- **Tables / pagination / app bar** — `surface`, `border`, `borderStrong`, `contentSubtle`.
+1. **Prefer theme** — Use `Theme.of(context).colorScheme` when the Material role matches the mapping above.
+2. **Use `GlyphColorTokens`** — For semantic fields once they exist on the extension: `context.glyphColors`.
+3. **Reserve `GlyphColors`** — For theme/token **definitions** and for palette entries **not** listed in the catalog.
 
 ---
 
@@ -136,4 +116,4 @@ Everything else (sidebar, feedback pairs, `accentPrimarySubtle`, `borderFocus`, 
 
 | Date | Change |
 |------|--------|
-| 2026-03-19 | Initial design: user vocabulary + mappings + `feedbackCritical*` + `surfaceSidebar` + `borderFocus`. |
+| 2026-03-19 | Adopted vocabulary: background, surface\*, content\*, border\*, accentPrimary\*, feedback\* only. |
