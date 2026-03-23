@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../tokens/glyph_colors.dart';
 import '../../tokens/glyph_typography.dart';
-import 'glyph_dropdown_metrics.dart';
 import 'glyph_dropdown_style.dart';
-import 'glyph_dropdown_trigger_style.dart';
 
 /// Direction in which [GlyphDropdown] opens its overlay panel.
 enum GlyphDropdownDirection {
@@ -111,7 +109,7 @@ final class GlyphDropdown<T> extends StatefulWidget {
     this.direction = .down,
     required this.triggerStyle,
     this.dropdownStyle,
-    this.metrics,
+    this.size = GlyphDropdownSize.medium,
   });
 
   final List<GlyphDropdownItem<T>> items;
@@ -136,7 +134,7 @@ final class GlyphDropdown<T> extends StatefulWidget {
 
   final GlyphDropdownTriggerStyle triggerStyle;
   final GlyphDropdownStyle? dropdownStyle;
-  final GlyphDropdownMetrics? metrics;
+  final GlyphDropdownSize size;
 
   @override
   State<GlyphDropdown<T>> createState() => _GlyphDropdownState<T>();
@@ -212,7 +210,7 @@ class _GlyphDropdownState<T> extends State<GlyphDropdown<T>>
     final leading = widget.leading ?? selected?.leading;
     final dir = widget.direction;
     final dropdownStyle = widget.dropdownStyle ?? GlyphDropdownStyle.standard();
-    final metrics = widget.metrics ?? GlyphDropdownMetrics.medium();
+    final sz = widget.size;
 
     return CompositedTransformTarget(
       link: _layerLink,
@@ -255,7 +253,7 @@ class _GlyphDropdownState<T> extends State<GlyphDropdown<T>>
           isDisabled: _isDisabled,
           controller: _controller,
           triggerStyle: widget.triggerStyle,
-          metrics: metrics,
+          size: sz,
         ),
       ),
     );
@@ -275,7 +273,7 @@ class _DropdownTrigger extends StatelessWidget {
     required this.isDisabled,
     required this.controller,
     required this.triggerStyle,
-    required this.metrics,
+    required this.size,
   });
 
   final String label;
@@ -287,11 +285,12 @@ class _DropdownTrigger extends StatelessWidget {
   final bool isDisabled;
   final WidgetStatesController controller;
   final GlyphDropdownTriggerStyle triggerStyle;
-  final GlyphDropdownMetrics metrics;
+  final GlyphDropdownSize size;
 
   @override
   Widget build(BuildContext context) {
     final states = controller.value;
+    final sz = size;
     final fgColor = triggerStyle.foregroundColor.resolve(states);
     final chevronColor = triggerStyle.chevronColor.resolve(states);
 
@@ -311,13 +310,16 @@ class _DropdownTrigger extends StatelessWidget {
             child: AnimatedContainer(
               duration: triggerStyle.animationDuration,
               curve: triggerStyle.animationCurve,
-              constraints: BoxConstraints(minWidth: minWidth),
+              constraints: BoxConstraints(
+                minWidth: minWidth,
+                minHeight: triggerStyle.triggerMinHeight.resolve(sz),
+              ),
               decoration: ShapeDecoration(
                 color: triggerStyle.backgroundColor.resolve(states),
                 shape: triggerStyle.shape.resolve(states),
                 shadows: triggerStyle.shadows.resolve(states),
               ),
-              padding: metrics.triggerPadding,
+              padding: triggerStyle.triggerPadding.resolve(sz),
               child: Row(
                 mainAxisSize: .max,
                 mainAxisAlignment: .spaceBetween,
@@ -327,13 +329,13 @@ class _DropdownTrigger extends StatelessWidget {
                     children: [
                       if (leading != null) ...[
                         leading!,
-                        SizedBox(width: metrics.triggerLeadingGap),
+                        SizedBox(width: triggerStyle.triggerLeadingGap.resolve(sz)),
                       ],
                       Text(
                         label,
-                        style: metrics.triggerLabelTextStyle.copyWith(
-                          color: fgColor,
-                        ),
+                        style: triggerStyle.triggerLabelTextStyle
+                            .resolve(sz)
+                            .copyWith(color: fgColor),
                       ),
                     ],
                   ),
@@ -351,7 +353,7 @@ class _DropdownTrigger extends StatelessWidget {
                         ),
                     child: Icon(
                       Icons.keyboard_arrow_down_rounded,
-                      size: metrics.chevronSize,
+                      size: triggerStyle.chevronSize.resolve(sz),
                       color: chevronColor,
                     ),
                   ),

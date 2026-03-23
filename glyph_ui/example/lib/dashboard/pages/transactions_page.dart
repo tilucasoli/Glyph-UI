@@ -215,7 +215,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
               onPressed: () {},
               semanticLabel: 'Export transactions',
               style: GlyphIconButtonStyle.stroke(),
-              metrics: GlyphIconButtonMetrics.small(),
+              size: .small,
             ),
           ],
         ),
@@ -422,7 +422,7 @@ class _KpiCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GlyphCard(
       style: GlyphCardStyle.surface(),
-      metrics: GlyphCardMetrics.medium(),
+      size: .medium,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

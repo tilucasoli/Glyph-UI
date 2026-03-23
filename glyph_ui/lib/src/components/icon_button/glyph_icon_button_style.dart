@@ -1,23 +1,50 @@
 import 'package:flutter/widgets.dart';
 
 import '../../tokens/glyph_colors.dart';
+import '../../utils/widget_size_property.dart';
 
-/// Visual style for [GlyphIconButton].
+/// Preset sizes for [GlyphIconButton] layout, resolved through
+/// [GlyphIconButtonStyle] layout properties.
+enum GlyphIconButtonSize {
+  xsmall,
+  small,
+  medium,
+}
+
+/// Style for [GlyphIconButton]: interaction state visuals and size-keyed layout.
 ///
-/// State-dependent properties use [WidgetStateProperty] and are resolved
-/// against the button's internal [WidgetStatesController].
-/// Dimensional metrics (button size, icon size) live in
-/// [GlyphIconButtonMetrics].
+/// Colors, shape, and shadows use [WidgetStateProperty]. Layout values use
+/// [WidgetCustomProperty] keyed by [GlyphIconButtonSize].
 @immutable
 final class GlyphIconButtonStyle {
-  const GlyphIconButtonStyle({
+  GlyphIconButtonStyle({
     required this.backgroundColor,
     required this.foregroundColor,
     required this.shape,
+    required this.buttonSide,
+    required this.iconSize,
     this.shadows = const WidgetStatePropertyAll([]),
     this.animationDuration = const .new(milliseconds: 150),
     this.animationCurve = Curves.easeOut,
   });
+
+  static final WidgetCustomProperty<double, GlyphIconButtonSize> _defaultButtonSide =
+      WidgetCustomProperty.resolveWith(
+    (size) => switch (size) {
+      .xsmall => 28,
+      .small => 32,
+      .medium => 40,
+    },
+  );
+
+  static final WidgetCustomProperty<double, GlyphIconButtonSize> _defaultIconSize =
+      WidgetCustomProperty.resolveWith(
+    (size) => switch (size) {
+      .xsmall => 14,
+      .small => 16,
+      .medium => 20,
+    },
+  );
 
   final WidgetStateProperty<Color> backgroundColor;
   final WidgetStateProperty<Color> foregroundColor;
@@ -25,6 +52,9 @@ final class GlyphIconButtonStyle {
   final WidgetStateProperty<List<BoxShadow>> shadows;
   final Duration animationDuration;
   final Curve animationCurve;
+
+  final WidgetCustomProperty<double, GlyphIconButtonSize> buttonSide;
+  final WidgetCustomProperty<double, GlyphIconButtonSize> iconSize;
 
   factory GlyphIconButtonStyle.filled() {
     return .new(
@@ -51,6 +81,8 @@ final class GlyphIconButtonStyle {
         return GlyphColors.surface;
       }),
       shape: .all(RoundedRectangleBorder(borderRadius: .circular(10))),
+      buttonSide: _defaultButtonSide,
+      iconSize: _defaultIconSize,
     );
   }
 
@@ -84,6 +116,8 @@ final class GlyphIconButtonStyle {
           side: BorderSide(color: GlyphColors.borderStrong),
         ),
       ),
+      buttonSide: _defaultButtonSide,
+      iconSize: _defaultIconSize,
     );
   }
 
@@ -110,6 +144,8 @@ final class GlyphIconButtonStyle {
         return GlyphColors.content;
       }),
       shape: .all(RoundedRectangleBorder(borderRadius: .circular(8))),
+      buttonSide: _defaultButtonSide,
+      iconSize: _defaultIconSize,
     );
   }
 
@@ -120,11 +156,15 @@ final class GlyphIconButtonStyle {
     WidgetStateProperty<List<BoxShadow>>? shadows,
     Duration? animationDuration,
     Curve? animationCurve,
+    WidgetCustomProperty<double, GlyphIconButtonSize>? buttonSide,
+    WidgetCustomProperty<double, GlyphIconButtonSize>? iconSize,
   }) {
     return .new(
       backgroundColor: backgroundColor ?? this.backgroundColor,
       foregroundColor: foregroundColor ?? this.foregroundColor,
       shape: shape ?? this.shape,
+      buttonSide: buttonSide ?? this.buttonSide,
+      iconSize: iconSize ?? this.iconSize,
       shadows: shadows ?? this.shadows,
       animationDuration: animationDuration ?? this.animationDuration,
       animationCurve: animationCurve ?? this.animationCurve,

@@ -83,7 +83,7 @@ class _DropdownDemoState extends State<_DropdownDemo> {
           : null,
       direction: _directionFrom(widget.direction),
       triggerStyle: .stroke(),
-      metrics: _metricsFrom(widget.size),
+      size: _dropdownSizeFrom(widget.size),
       items: const [
         GlyphDropdownItem(value: 'conf', label: 'Design Conference 2024'),
         GlyphDropdownItem(value: 'summit', label: 'TechPulse Summit'),
@@ -94,10 +94,10 @@ class _DropdownDemoState extends State<_DropdownDemo> {
   }
 }
 
-GlyphDropdownMetrics _metricsFrom(String value) {
+GlyphDropdownSize _dropdownSizeFrom(String value) {
   return switch (value) {
-    'large' => .large(),
-    _ => .medium(),
+    'large' => .large,
+    _ => .medium,
   };
 }
 

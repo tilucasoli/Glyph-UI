@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'glyph_button_metrics.dart';
 import 'glyph_button_style.dart';
 
 final class GlyphButton extends StatefulWidget {
@@ -9,7 +8,7 @@ final class GlyphButton extends StatefulWidget {
     required this.label,
     required this.onPressed,
     required this.style,
-    this.metrics,
+    this.size = GlyphButtonSize.medium,
     this.leadingIcon,
     this.trailingIcon,
     this.expand = false,
@@ -19,7 +18,7 @@ final class GlyphButton extends StatefulWidget {
   final String label;
   final VoidCallback? onPressed;
   final GlyphButtonStyle style;
-  final GlyphButtonMetrics? metrics;
+  final GlyphButtonSize size;
   final Widget? leadingIcon;
   final Widget? trailingIcon;
   final bool expand;
@@ -69,21 +68,27 @@ class _GlyphButtonState extends State<GlyphButton> {
   @override
   Widget build(BuildContext context) {
     final style = widget.style;
-    final metrics = widget.metrics ?? .medium();
+    final sz = widget.size;
     final states = _controller.value;
     final fgColor = style.foregroundColor.resolve(states);
 
+    final iconSize = style.iconSize.resolve(sz);
+    final iconGap = style.iconGap.resolve(sz);
+    final padding = style.padding.resolve(sz);
+    final minHeight = style.minHeight.resolve(sz);
+    final labelTextStyle = style.labelTextStyle.resolve(sz);
+
     final content = IconTheme(
-      data: IconThemeData(size: metrics.iconSize, color: fgColor),
+      data: IconThemeData(size: iconSize, color: fgColor),
       child: Row(
         mainAxisSize: widget.expand ? .max : .min,
         mainAxisAlignment: .center,
-        spacing: metrics.iconGap,
+        spacing: iconGap,
         children: [
           ?widget.leadingIcon,
           Text(
             widget.label,
-            style: metrics.labelTextStyle.copyWith(color: fgColor),
+            style: labelTextStyle.copyWith(color: fgColor),
             textHeightBehavior: .new(
               applyHeightToFirstAscent: false,
               applyHeightToLastDescent: true,
@@ -95,8 +100,8 @@ class _GlyphButtonState extends State<GlyphButton> {
     );
 
     final loadingIndicator = SizedBox(
-      width: metrics.iconSize,
-      height: metrics.iconSize,
+      width: iconSize,
+      height: iconSize,
       child: CircularProgressIndicator(
         strokeWidth: 2,
         color: style.foregroundColor.resolve({.disabled}),
@@ -126,9 +131,9 @@ class _GlyphButtonState extends State<GlyphButton> {
                 shape: style.shape.resolve(states),
                 shadows: style.shadows.resolve(states),
               ),
-              padding: metrics.padding,
+              padding: padding,
               constraints: BoxConstraints(
-                minHeight: metrics.minHeight,
+                minHeight: minHeight,
                 minWidth: widget.expand ? .infinity : 0,
               ),
               child: Stack(

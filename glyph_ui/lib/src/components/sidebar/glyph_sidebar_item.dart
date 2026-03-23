@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'glyph_sidebar_item_style.dart';
-import 'glyph_sidebar_metrics.dart';
+import 'glyph_sidebar_style.dart';
 
 export 'glyph_sidebar_item_style.dart';
 
@@ -32,17 +32,17 @@ class GlyphSidebarItem {
 /// Interactive row for one [GlyphSidebarItem].
 ///
 /// Uses [GlyphSidebarItemStyle] for colors, shape, and motion; dimensions come
-/// from [GlyphSidebarMetrics] when the tile sits inside [GlyphSidebar].
+/// from [GlyphSidebarStyle] when the tile sits inside [GlyphSidebar].
 final class GlyphSidebarItemTile extends StatefulWidget {
   const GlyphSidebarItemTile({
     super.key,
-    required this.style,
-    required this.metrics,
+    required this.sidebarStyle,
+    required this.size,
     required this.item,
   });
 
-  final GlyphSidebarItemStyle style;
-  final GlyphSidebarMetrics metrics;
+  final GlyphSidebarStyle sidebarStyle;
+  final GlyphSidebarSize size;
   final GlyphSidebarItem item;
 
   @override
@@ -53,6 +53,8 @@ class _GlyphSidebarItemTileState extends State<GlyphSidebarItemTile> {
   final _controller = WidgetStatesController();
 
   bool get _disabled => widget.item.onTap == null;
+
+  GlyphSidebarItemStyle get _itemStyle => widget.sidebarStyle.itemStyle;
 
   @override
   void initState() {
@@ -90,10 +92,13 @@ class _GlyphSidebarItemTileState extends State<GlyphSidebarItemTile> {
   @override
   Widget build(BuildContext context) {
     final states = _controller.value;
-    final bg = widget.style.backgroundColor.resolve(states);
-    final fg = widget.style.foregroundColor.resolve(states);
-    final shadows = widget.style.shadows.resolve(states);
-    final shape = widget.style.shape.resolve(states);
+    final s = widget.sidebarStyle;
+    final sz = widget.size;
+    final style = _itemStyle;
+    final bg = style.backgroundColor.resolve(states);
+    final fg = style.foregroundColor.resolve(states);
+    final shadows = style.shadows.resolve(states);
+    final shape = style.shape.resolve(states);
 
     return Semantics(
       button: true,
@@ -112,12 +117,12 @@ class _GlyphSidebarItemTileState extends State<GlyphSidebarItemTile> {
             onTap: widget.item.onTap,
             behavior: HitTestBehavior.opaque,
             child: AnimatedContainer(
-              duration: widget.style.animationDuration,
-              curve: widget.style.animationCurve,
+              duration: style.animationDuration,
+              curve: style.animationCurve,
               margin: EdgeInsets.only(
-                bottom: widget.metrics.navItemBottomMargin,
+                bottom: s.navItemBottomMargin.resolve(sz),
               ),
-              padding: widget.metrics.navItemPadding,
+              padding: s.navItemPadding.resolve(sz),
               decoration: ShapeDecoration(
                 color: bg,
                 shape: shape,
@@ -127,15 +132,15 @@ class _GlyphSidebarItemTileState extends State<GlyphSidebarItemTile> {
                 children: [
                   IconTheme(
                     data: IconThemeData(
-                      color: widget.style.iconColor.resolve(states),
-                      size: widget.metrics.navItemIconSize,
+                      color: style.iconColor.resolve(states),
+                      size: s.navItemIconSize.resolve(sz),
                     ),
                     child: widget.item.icon,
                   ),
-                  SizedBox(width: widget.metrics.navItemIconGap),
+                  SizedBox(width: s.navItemIconGap.resolve(sz)),
                   Text(
                     widget.item.label,
-                    style: widget.style.labelTextStyle
+                    style: style.labelTextStyle
                         .resolve(states)
                         .copyWith(color: fg),
                   ),

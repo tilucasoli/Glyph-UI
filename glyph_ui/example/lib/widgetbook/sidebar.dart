@@ -65,8 +65,8 @@ Widget sidebarItemTileUseCase(BuildContext context) {
     child: ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 280),
       child: GlyphSidebarItemTile(
-        style: sidebarStyle.itemStyle,
-        metrics: .medium(),
+        sidebarStyle: sidebarStyle,
+        size: .medium,
         item: GlyphSidebarItem(
           icon: const Icon(Icons.inbox_outlined),
           label: 'Inbox',

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../sidebar/glyph_sidebar.dart';
-import 'glyph_scaffold_metrics.dart';
 import 'glyph_scaffold_style.dart';
 
 /// App-level scaffold that composes a [GlyphSidebar] with a main content area.
 ///
 /// Matches the `.layout-wrapper` structure from the design reference:
 /// - Full-screen canvas background from [GlyphScaffoldStyle.canvasColor]
-/// - Inset padding and gap from [GlyphScaffoldMetrics]
+/// - Inset padding and gap from [GlyphScaffoldStyle] layout properties
 /// - Main content in a rounded surface panel with shadow from [GlyphScaffoldStyle]
 ///
 /// Intended to replace [Scaffold] at the root of a desktop/tablet layout.
@@ -29,40 +28,36 @@ final class GlyphScaffold extends StatelessWidget {
   const GlyphScaffold({
     super.key,
     required this.style,
-    this.metrics,
+    this.size = GlyphScaffoldSize.medium,
     required this.sidebar,
     required this.body,
   });
 
   final GlyphScaffoldStyle style;
-
-  /// Defaults to [GlyphScaffoldMetrics.medium] when omitted.
-  final GlyphScaffoldMetrics? metrics;
-
+  final GlyphScaffoldSize size;
   final GlyphSidebar sidebar;
-
-  /// The main content displayed to the right of the sidebar.
   final Widget body;
 
   @override
   Widget build(BuildContext context) {
-    final m = metrics ?? .medium();
+    final s = style;
+    final sz = size;
 
     return Scaffold(
-      backgroundColor: style.canvasColor,
+      backgroundColor: s.canvasColor,
       body: Padding(
-        padding: m.outerPadding,
+        padding: s.outerPadding.resolve(sz),
         child: Row(
-          spacing: m.sidebarContentGap,
+          spacing: s.sidebarContentGap.resolve(sz),
           children: [
             sidebar,
             Expanded(
               child: Container(
                 clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(
-                  color: style.contentSurfaceColor,
-                  borderRadius: style.contentBorderRadius,
-                  boxShadow: style.contentShadows,
+                  color: s.contentSurfaceColor,
+                  borderRadius: s.contentBorderRadius,
+                  boxShadow: s.contentShadows,
                 ),
                 child: body,
               ),

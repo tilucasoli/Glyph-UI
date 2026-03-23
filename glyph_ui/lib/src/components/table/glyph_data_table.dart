@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'glyph_data_table_metrics.dart';
 import 'glyph_data_table_style.dart';
 
 /// Column definition for [GlyphDataTable].
@@ -29,13 +28,12 @@ class GlyphColumn<T> {
 ///
 /// Matches `.table-container` + `table` from the design reference:
 /// - Rounded outer container with configurable border ([GlyphDataTableStyle])
-/// - Header row with uppercase column labels ([GlyphDataTableMetrics])
+/// - Header row with uppercase column labels
 /// - Body rows with hover / press feedback when [onRowTap] is set
 ///
 /// ```dart
 /// GlyphDataTable<Attendee>(
 ///   style: GlyphDataTableStyle.standard(),
-///   metrics: GlyphDataTableMetrics.medium(),
 ///   columns: [
 ///     GlyphColumn(
 ///       header: 'Attendee',
@@ -53,7 +51,7 @@ final class GlyphDataTable<T> extends StatelessWidget {
     required this.columns,
     required this.rows,
     required this.style,
-    this.metrics,
+    this.size = GlyphDataTableSize.medium,
     this.onRowTap,
     this.footer,
   });
@@ -61,18 +59,13 @@ final class GlyphDataTable<T> extends StatelessWidget {
   final List<GlyphColumn<T>> columns;
   final List<T> rows;
   final GlyphDataTableStyle style;
-
-  /// Defaults to [GlyphDataTableMetrics.medium] when omitted.
-  final GlyphDataTableMetrics? metrics;
-
+  final GlyphDataTableSize size;
   final void Function(T row)? onRowTap;
-
-  /// Optional widget rendered inside the clipped container below the last row.
   final Widget? footer;
 
   @override
   Widget build(BuildContext context) {
-    final m = metrics ?? .medium();
+    final sz = size;
 
     return Container(
       decoration: BoxDecoration(
@@ -84,14 +77,14 @@ final class GlyphDataTable<T> extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _HeaderRow<T>(columns: columns, style: style, metrics: m),
+          _HeaderRow<T>(columns: columns, style: style, size: sz),
           ...rows.asMap().entries.map(
             (e) => _DataRow<T>(
               columns: columns,
               row: e.value,
               isLast: e.key == rows.length - 1,
               style: style,
-              metrics: m,
+              size: sz,
               onTap: onRowTap != null ? () => onRowTap!(e.value) : null,
             ),
           ),
@@ -108,17 +101,17 @@ class _HeaderRow<T> extends StatelessWidget {
   const _HeaderRow({
     required this.columns,
     required this.style,
-    required this.metrics,
+    required this.size,
   });
 
   final List<GlyphColumn<T>> columns;
   final GlyphDataTableStyle style;
-  final GlyphDataTableMetrics metrics;
+  final GlyphDataTableSize size;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: metrics.headerPadding,
+      padding: style.headerPadding.resolve(size),
       decoration: BoxDecoration(
         color: style.headerBackgroundColor,
         border: Border(bottom: style.headerBottomBorderSide),
@@ -134,9 +127,9 @@ class _HeaderRow<T> extends StatelessWidget {
   Widget _headerCell(GlyphColumn<T> col) {
     return Text(
       col.header.toUpperCase(),
-      style: metrics.headerLabelStyle.copyWith(
-        color: style.headerForegroundColor,
-      ),
+      style: style.headerLabelStyle.resolve(size).copyWith(
+            color: style.headerForegroundColor,
+          ),
     );
   }
 
@@ -154,7 +147,7 @@ class _DataRow<T> extends StatefulWidget {
     required this.row,
     required this.isLast,
     required this.style,
-    required this.metrics,
+    required this.size,
     this.onTap,
   });
 
@@ -162,7 +155,7 @@ class _DataRow<T> extends StatefulWidget {
   final T row;
   final bool isLast;
   final GlyphDataTableStyle style;
-  final GlyphDataTableMetrics metrics;
+  final GlyphDataTableSize size;
   final VoidCallback? onTap;
 
   @override
@@ -209,7 +202,7 @@ class _DataRowState<T> extends State<_DataRow<T>> {
   @override
   Widget build(BuildContext context) {
     final style = widget.style;
-    final metrics = widget.metrics;
+    final sz = widget.size;
     final states = _controller.value;
     final rowBg = style.rowBackgroundColor.resolve(states);
 
@@ -232,7 +225,7 @@ class _DataRowState<T> extends State<_DataRow<T>> {
             child: AnimatedContainer(
               duration: style.rowAnimationDuration,
               curve: style.rowAnimationCurve,
-              padding: metrics.rowPadding,
+              padding: style.rowPadding.resolve(sz),
               decoration: BoxDecoration(
                 color: rowBg,
                 border: widget.isLast

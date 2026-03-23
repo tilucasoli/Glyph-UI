@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'glyph_icon_button_metrics.dart';
 import 'glyph_icon_button_style.dart';
 
 final class GlyphIconButton extends StatefulWidget {
@@ -10,7 +9,7 @@ final class GlyphIconButton extends StatefulWidget {
     required this.onPressed,
     required this.semanticLabel,
     required this.style,
-    this.metrics,
+    this.size = GlyphIconButtonSize.medium,
     this.tooltip,
   });
 
@@ -18,7 +17,7 @@ final class GlyphIconButton extends StatefulWidget {
   final VoidCallback? onPressed;
   final String semanticLabel;
   final GlyphIconButtonStyle style;
-  final GlyphIconButtonMetrics? metrics;
+  final GlyphIconButtonSize size;
   final String? tooltip;
 
   @override
@@ -65,8 +64,10 @@ class _GlyphIconButtonState extends State<GlyphIconButton> {
   @override
   Widget build(BuildContext context) {
     final style = widget.style;
-    final metrics = widget.metrics ?? GlyphIconButtonMetrics.medium();
+    final sz = widget.size;
     final states = _controller.value;
+    final side = style.buttonSide.resolve(sz);
+    final iconSize = style.iconSize.resolve(sz);
 
     Widget result = Semantics(
       button: true,
@@ -87,8 +88,8 @@ class _GlyphIconButtonState extends State<GlyphIconButton> {
             child: AnimatedContainer(
               duration: style.animationDuration,
               curve: style.animationCurve,
-              width: metrics.buttonSize,
-              height: metrics.buttonSize,
+              width: side,
+              height: side,
               decoration: ShapeDecoration(
                 color: style.backgroundColor.resolve(states),
                 shape: style.shape.resolve(states),
@@ -97,7 +98,7 @@ class _GlyphIconButtonState extends State<GlyphIconButton> {
               alignment: .center,
               child: IconTheme(
                 data: IconThemeData(
-                  size: metrics.iconSize,
+                  size: iconSize,
                   color: style.foregroundColor.resolve(states),
                 ),
                 child: widget.icon,

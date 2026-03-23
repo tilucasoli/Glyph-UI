@@ -186,7 +186,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
               label: 'New Invoice',
               onPressed: () {},
               style: GlyphButtonStyle.filled(),
-              metrics: GlyphButtonMetrics.medium(),
+              size: .medium,
               leadingIcon: const Icon(Icons.add),
             ),
             GlyphIconButton(
@@ -194,7 +194,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
               onPressed: () {},
               semanticLabel: 'Export invoices',
               style: GlyphIconButtonStyle.stroke(),
-              metrics: GlyphIconButtonMetrics.small(),
+              size: .small,
             ),
           ],
         ),
@@ -392,7 +392,7 @@ class _SummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GlyphCard(
       style: GlyphCardStyle.surface(),
-      metrics: GlyphCardMetrics.medium(),
+      size: .medium,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

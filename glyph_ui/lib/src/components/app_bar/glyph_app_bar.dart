@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../breadcrumbs/glyph_breadcrumbs.dart';
-import 'glyph_app_bar_metrics.dart';
+import '../breadcrumbs/glyph_breadcrumbs_style.dart';
 import 'glyph_app_bar_style.dart';
 
 /// Page-level app bar that sits at the top of a content panel.
@@ -9,7 +9,7 @@ import 'glyph_app_bar_style.dart';
 /// Layout rules:
 /// - When only [breadcrumbs] or only [title] is provided: single row.
 /// - When both are provided: [breadcrumbs] on the first row, [title] on the
-///   second row using metrics [GlyphAppBarMetrics.titleTextStyle].
+///   second row using metrics [GlyphAppBarStyle.titleTextStyle].
 /// - [actions] are always trailing on the first row.
 ///
 /// ```dart
@@ -26,16 +26,14 @@ final class GlyphAppBar extends StatelessWidget {
   const GlyphAppBar({
     super.key,
     required this.style,
-    this.metrics,
+    this.size = GlyphAppBarSize.medium,
     this.breadcrumbs,
     this.title,
     this.actions,
   });
 
   final GlyphAppBarStyle style;
-
-  /// Defaults to [GlyphAppBarMetrics.medium] when omitted.
-  final GlyphAppBarMetrics? metrics;
+  final GlyphAppBarSize size;
 
   /// Breadcrumb labels shown at the top-left in small secondary text.
   final List<String>? breadcrumbs;
@@ -52,22 +50,27 @@ final class GlyphAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final m = metrics ?? .medium();
+    final m = style;
+    final sz = size;
+    final titleStyle = m.titleTextStyle.resolve(sz);
 
     final Widget? topLeft = _hasBreadcrumbs
-        ? GlyphBreadcrumbs(items: breadcrumbs!, style: .standard())
+        ? GlyphBreadcrumbs(
+            items: breadcrumbs!,
+            style: GlyphBreadcrumbsStyle.standard(),
+          )
         : _hasTitle
-        ? Text(title!, style: m.titleTextStyle)
+        ? Text(title!, style: titleStyle)
         : null;
 
     return Container(
-      padding: m.padding,
+      padding: m.padding.resolve(sz),
       decoration: BoxDecoration(
-        color: style.backgroundColor,
-        border: Border(bottom: style.bottomBorder),
+        color: m.backgroundColor,
+        border: Border(bottom: m.bottomBorder),
       ),
       alignment: Alignment.center,
-      constraints: BoxConstraints(minHeight: m.minHeight),
+      constraints: BoxConstraints(minHeight: m.minHeight.resolve(sz)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -77,12 +80,16 @@ final class GlyphAppBar extends StatelessWidget {
               children: [
                 if (topLeft != null) topLeft,
                 const Spacer(),
-                if (_hasActions) _ActionsRow(spacing: m.actionSpacing, actions: actions!),
+                if (_hasActions)
+                  _ActionsRow(
+                    spacing: m.actionSpacing.resolve(sz),
+                    actions: actions!,
+                  ),
               ],
             ),
           if (_hasBreadcrumbs && _hasTitle) ...[
-            SizedBox(height: m.breadcrumbTitleGap),
-            Text(title!, style: m.titleTextStyle),
+            SizedBox(height: m.breadcrumbTitleGap.resolve(sz)),
+            Text(title!, style: titleStyle),
           ],
         ],
       ),

@@ -11,7 +11,6 @@ import 'widgetbook/forms.dart';
 import 'widgetbook/layout.dart';
 import 'widgetbook/nav.dart';
 import 'widgetbook/sidebar.dart';
-import 'widgetbook/table.dart';
 
 void main() {
   runApp(const GlyphWidgetbookApp());

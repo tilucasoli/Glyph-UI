@@ -39,7 +39,7 @@ Widget buttonUseCase(BuildContext context) {
       label: label,
       onPressed: (isLoading || disabled) ? null : () {},
       style: _styleFrom(variant),
-      metrics: _buttonMetricsFrom(size),
+      size: _buttonSizeFrom(size),
       expand: expand,
       loading: isLoading,
       leadingIcon: showLeadingIcon
@@ -85,7 +85,7 @@ Widget iconButtonUseCase(BuildContext context) {
       onPressed: disabled ? null : () {},
       semanticLabel: semanticLabel,
       style: _iconButtonStyleFrom(variant),
-      metrics: _iconButtonMetricsFrom(size),
+      size: _iconButtonSizeFrom(size),
       tooltip: tooltip.isEmpty ? null : tooltip,
     ),
   );
@@ -99,11 +99,11 @@ GlyphButtonStyle _styleFrom(String value) {
   };
 }
 
-GlyphButtonMetrics _buttonMetricsFrom(String value) {
+GlyphButtonSize _buttonSizeFrom(String value) {
   return switch (value) {
-    'small' => .small(),
-    'xsmall' => .xsmall(),
-    _ => .medium(),
+    'small' => .small,
+    'xsmall' => .xsmall,
+    _ => .medium,
   };
 }
 
@@ -115,11 +115,11 @@ GlyphIconButtonStyle _iconButtonStyleFrom(String value) {
   };
 }
 
-GlyphIconButtonMetrics _iconButtonMetricsFrom(String value) {
+GlyphIconButtonSize _iconButtonSizeFrom(String value) {
   return switch (value) {
-    'small' => .small(),
-    'xsmall' => .xsmall(),
-    _ => .medium(),
+    'small' => .small,
+    'xsmall' => .xsmall,
+    _ => .medium,
   };
 }
 

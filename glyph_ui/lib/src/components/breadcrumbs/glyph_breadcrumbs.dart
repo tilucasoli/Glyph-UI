@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'glyph_breadcrumbs_metrics.dart';
 import 'glyph_breadcrumbs_style.dart';
 
 /// Horizontal breadcrumb trail.
 ///
 /// Items are separated by a chevron icon. Ancestor segments use
-/// [GlyphBreadcrumbsMetrics.ancestorSegmentStyle] with
+/// [GlyphBreadcrumbsStyle.ancestorSegmentStyle] with
 /// [GlyphBreadcrumbsStyle.ancestorTextColor]; the last segment uses
-/// [GlyphBreadcrumbsMetrics.currentSegmentStyle] with
+/// [GlyphBreadcrumbsStyle.currentSegmentStyle] with
 /// [GlyphBreadcrumbsStyle.currentTextColor].
 ///
 /// ```dart
@@ -22,18 +21,17 @@ final class GlyphBreadcrumbs extends StatelessWidget {
     super.key,
     required this.items,
     required this.style,
-    this.metrics,
+    this.size = GlyphBreadcrumbsSize.medium,
   });
 
   final List<String> items;
   final GlyphBreadcrumbsStyle style;
-
-  /// Defaults to [GlyphBreadcrumbsMetrics.medium] when omitted.
-  final GlyphBreadcrumbsMetrics? metrics;
+  final GlyphBreadcrumbsSize size;
 
   @override
   Widget build(BuildContext context) {
-    final m = metrics ?? .medium();
+    final m = style;
+    final sz = size;
     final children = <Widget>[];
 
     for (var i = 0; i < items.length; i++) {
@@ -41,20 +39,22 @@ final class GlyphBreadcrumbs extends StatelessWidget {
       children.add(
         Text(
           items[i],
-          style: (isLast ? m.currentSegmentStyle : m.ancestorSegmentStyle)
+          style: (isLast
+                  ? m.currentSegmentStyle.resolve(sz)
+                  : m.ancestorSegmentStyle.resolve(sz))
               .copyWith(
-            color: isLast ? style.currentTextColor : style.ancestorTextColor,
+            color: isLast ? m.currentTextColor : m.ancestorTextColor,
           ),
         ),
       );
       if (!isLast) {
         children.add(
           Padding(
-            padding: .symmetric(horizontal: m.chevronHorizontalGutter),
+            padding: .symmetric(horizontal: m.chevronHorizontalGutter.resolve(sz)),
             child: Icon(
               Icons.chevron_right_rounded,
-              size: m.chevronSize,
-              color: style.separatorIconColor,
+              size: m.chevronSize.resolve(sz),
+              color: m.separatorIconColor,
             ),
           ),
         );

@@ -2,31 +2,51 @@ import 'package:flutter/widgets.dart';
 
 import '../../tokens/glyph_colors.dart';
 import '../../tokens/glyph_radius.dart';
+import '../../utils/widget_size_property.dart';
 
-/// Visual properties for [GlyphCard].
+/// Preset sizes for [GlyphCard] content padding.
+enum GlyphCardSize {
+  small,
+  medium,
+  large,
+}
+
+/// Visual and layout properties for [GlyphCard].
 ///
-/// Since a card is a non-interactive wrapper, properties are plain values
-/// rather than [WidgetStateProperty].
+/// Non-interactive wrapper: colors and radii are plain values. Layout uses
+/// [WidgetCustomProperty] keyed by [GlyphCardSize].
 @immutable
 final class GlyphCardStyle {
-  const GlyphCardStyle({
+  GlyphCardStyle({
     required this.backgroundColor,
     required this.borderSide,
     required this.borderRadius,
+    required this.padding,
     this.shadows = const [],
   });
+
+  static final WidgetCustomProperty<EdgeInsets, GlyphCardSize> _defaultPadding =
+      WidgetCustomProperty.resolveWith(
+    (size) => switch (size) {
+      .small => const EdgeInsets.all(16),
+      .medium => const EdgeInsets.all(24),
+      .large => const EdgeInsets.all(32),
+    },
+  );
 
   final Color backgroundColor;
   final BorderSide borderSide;
   final BorderRadius borderRadius;
   final List<BoxShadow> shadows;
 
-  /// White surface with a subtle shadow and translucent border.
+  final WidgetCustomProperty<EdgeInsets, GlyphCardSize> padding;
+
   factory GlyphCardStyle.surface() {
     return .new(
       backgroundColor: GlyphColors.surface,
       borderSide: BorderSide(color: GlyphColors.border),
       borderRadius: GlyphRadius.borderLarge,
+      padding: _defaultPadding,
       shadows: [
         BoxShadow(
           color: GlyphColors.content.withValues(alpha: 0.02),
@@ -42,12 +62,14 @@ final class GlyphCardStyle {
     BorderSide? borderSide,
     BorderRadius? borderRadius,
     List<BoxShadow>? shadows,
+    WidgetCustomProperty<EdgeInsets, GlyphCardSize>? padding,
   }) {
     return .new(
       backgroundColor: backgroundColor ?? this.backgroundColor,
       borderSide: borderSide ?? this.borderSide,
       borderRadius: borderRadius ?? this.borderRadius,
       shadows: shadows ?? this.shadows,
+      padding: padding ?? this.padding,
     );
   }
 }

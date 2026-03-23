@@ -99,7 +99,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ? () => setState(() => _hasUnsaved = false)
                   : null,
               style: GlyphButtonStyle.filled(),
-              metrics: GlyphButtonMetrics.medium(),
+              size: .medium,
             ),
           ],
         ),
@@ -446,7 +446,7 @@ class _ProfilePanel extends StatelessWidget {
                     label: 'Upload logo',
                     onPressed: () {},
                     style: GlyphButtonStyle.stroke(),
-                    metrics: GlyphButtonMetrics.small(),
+                    size: .small,
                   ),
                 ],
               ),
@@ -457,7 +457,7 @@ class _ProfilePanel extends StatelessWidget {
 
           GlyphCard(
             style: GlyphCardStyle.surface(),
-            metrics: GlyphCardMetrics.medium(),
+            size: .medium,
             child: Column(
               spacing: Spacing.x4,
               children: [
@@ -569,7 +569,7 @@ class _NotificationsPanel extends StatelessWidget {
           const SizedBox(height: Spacing.x2),
           GlyphCard(
             style: GlyphCardStyle.surface(),
-            metrics: GlyphCardMetrics.medium(),
+            size: .medium,
             child: Column(
               children: [
                 _RowItem(
@@ -608,7 +608,7 @@ class _NotificationsPanel extends StatelessWidget {
           const SizedBox(height: Spacing.x2),
           GlyphCard(
             style: GlyphCardStyle.surface(),
-            metrics: GlyphCardMetrics.medium(),
+            size: .medium,
             child: Column(
               children: [
                 _RowItem(
@@ -664,7 +664,7 @@ class _SecurityPanel extends StatelessWidget {
 
           GlyphCard(
             style: GlyphCardStyle.surface(),
-            metrics: GlyphCardMetrics.medium(),
+            size: .medium,
             child: Column(
               children: [
                 _RowItem(
@@ -683,7 +683,7 @@ class _SecurityPanel extends StatelessWidget {
                     label: 'Change',
                     onPressed: () {},
                     style: GlyphButtonStyle.stroke(),
-                    metrics: GlyphButtonMetrics.small(),
+                    size: .small,
                   ),
                 ),
                 _RowItem(
@@ -693,7 +693,7 @@ class _SecurityPanel extends StatelessWidget {
                     label: 'Manage',
                     onPressed: () {},
                     style: GlyphButtonStyle.stroke(),
-                    metrics: GlyphButtonMetrics.small(),
+                    size: .small,
                   ),
                   isLast: true,
                 ),
@@ -768,7 +768,7 @@ class _SecurityPanel extends StatelessWidget {
                       return GlyphColors.surface;
                     }),
                   ),
-                  metrics: GlyphButtonMetrics.medium(),
+                  size: .medium,
                 ),
               ],
             ),
@@ -800,7 +800,7 @@ class _BillingPanel extends StatelessWidget {
           // Current plan
           GlyphCard(
             style: GlyphCardStyle.surface(),
-            metrics: GlyphCardMetrics.medium(),
+            size: .medium,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -837,7 +837,7 @@ class _BillingPanel extends StatelessWidget {
                       label: 'Manage plan',
                       onPressed: () {},
                       style: GlyphButtonStyle.stroke(),
-                      metrics: GlyphButtonMetrics.medium(),
+                      size: .medium,
                     ),
                   ],
                 ),
@@ -889,7 +889,7 @@ class _BillingPanel extends StatelessWidget {
           const SizedBox(height: Spacing.x2),
           GlyphCard(
             style: GlyphCardStyle.surface(),
-            metrics: GlyphCardMetrics.medium(),
+            size: .medium,
             child: _RowItem(
               label: 'Visa ending in 4242',
               description: 'Expires 09 / 2028',
@@ -897,7 +897,7 @@ class _BillingPanel extends StatelessWidget {
                 label: 'Update card',
                 onPressed: () {},
                 style: GlyphButtonStyle.stroke(),
-                metrics: GlyphButtonMetrics.medium(),
+                size: .medium,
               ),
               isLast: true,
             ),
@@ -909,7 +909,7 @@ class _BillingPanel extends StatelessWidget {
           const SizedBox(height: Spacing.x2),
           GlyphCard(
             style: GlyphCardStyle.surface(),
-            metrics: GlyphCardMetrics.medium(),
+            size: .medium,
             child: Column(
               children: [
                 _BillingHistoryRow(
@@ -1059,7 +1059,7 @@ class _BillingHistoryRow extends StatelessWidget {
             label: 'Receipt',
             onPressed: () {},
             style: GlyphButtonStyle.ghost(),
-            metrics: GlyphButtonMetrics.small(),
+            size: .small,
           ),
         ],
       ),

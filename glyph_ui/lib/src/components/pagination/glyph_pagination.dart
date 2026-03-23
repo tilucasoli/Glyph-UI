@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../button/glyph_button.dart';
-import '../button/glyph_button_metrics.dart';
 import '../button/glyph_button_style.dart';
-import 'glyph_pagination_metrics.dart';
 import 'glyph_pagination_style.dart';
 
 /// Pagination bar with item count info and prev / next controls.
@@ -29,7 +27,7 @@ final class GlyphPagination extends StatelessWidget {
     required this.totalItems,
     required this.itemsPerPage,
     required this.style,
-    this.metrics,
+    this.size = GlyphPaginationSize.medium,
     this.onPrevious,
     this.onNext,
   });
@@ -39,9 +37,7 @@ final class GlyphPagination extends StatelessWidget {
   final int totalItems;
   final int itemsPerPage;
   final GlyphPaginationStyle style;
-
-  /// Defaults to [GlyphPaginationMetrics.medium] when omitted.
-  final GlyphPaginationMetrics? metrics;
+  final GlyphPaginationSize size;
   final VoidCallback? onPrevious;
   final VoidCallback? onNext;
 
@@ -56,11 +52,11 @@ final class GlyphPagination extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final m = metrics ?? .medium();
     final s = style;
+    final sz = size;
 
     return Container(
-      padding: m.barPadding,
+      padding: s.barPadding.resolve(sz),
       decoration: BoxDecoration(
         color: s.barBackgroundColor,
         border: Border(top: s.barTopBorderSide),
@@ -70,22 +66,24 @@ final class GlyphPagination extends StatelessWidget {
         children: [
           Text(
             'Showing $_firstItem to $_lastItem of $totalItems',
-            style: m.summaryLabelStyle.copyWith(color: s.summaryTextColor),
+            style: s.summaryLabelStyle
+                .resolve(sz)
+                .copyWith(color: s.summaryTextColor),
           ),
           Row(
-            spacing: m.pageButtonGap,
+            spacing: s.pageButtonGap.resolve(sz),
             children: [
               GlyphButton(
                 label: 'Previous',
                 onPressed: currentPage > 1 ? onPrevious : null,
                 style: GlyphButtonStyle.stroke(),
-                metrics: GlyphButtonMetrics.xsmall(),
+                size: .xsmall,
               ),
               GlyphButton(
                 label: 'Next',
                 onPressed: currentPage < _totalPages ? onNext : null,
                 style: GlyphButtonStyle.stroke(),
-                metrics: GlyphButtonMetrics.xsmall(),
+                size: .xsmall,
               ),
             ],
           ),

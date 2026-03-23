@@ -39,7 +39,7 @@ Widget textField(BuildContext context) {
         label: label,
         placeholder: placeholder,
         style: GlyphTextFieldStyle.stroke(),
-        metrics: _metricsFrom(size),
+        size: _textFieldSizeFrom(size),
         enabled: enabled,
         obscureText: obscureText,
         trailing: showTrailing ? const Icon(Icons.credit_card, size: 20) : null,
@@ -48,9 +48,9 @@ Widget textField(BuildContext context) {
   );
 }
 
-GlyphTextFieldMetrics _metricsFrom(String size) {
+GlyphTextFieldSize _textFieldSizeFrom(String size) {
   return switch (size) {
-    'large' => GlyphTextFieldMetrics.large(),
-    _ => GlyphTextFieldMetrics.medium(),
+    'large' => .large,
+    _ => .medium,
   };
 }

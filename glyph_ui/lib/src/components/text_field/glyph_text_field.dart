@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 
-import 'glyph_text_field_metrics.dart';
 import 'glyph_text_field_style.dart';
 
-/// Labeled text field using [GlyphTextFieldStyle] + [GlyphTextFieldMetrics].
+/// Labeled text field using [GlyphTextFieldStyle].
 ///
 /// ```dart
 /// GlyphTextField(
 ///   label: 'Cardholder Name',
 ///   placeholder: 'John Doe',
 ///   style: GlyphTextFieldStyle.stroke(),
-///   metrics: GlyphTextFieldMetrics.medium(),
 /// )
 /// ```
 final class GlyphTextField extends StatefulWidget {
@@ -18,7 +16,7 @@ final class GlyphTextField extends StatefulWidget {
     super.key,
     required this.label,
     required this.style,
-    this.metrics,
+    this.size = GlyphTextFieldSize.medium,
     this.placeholder,
     this.controller,
     this.keyboardType,
@@ -31,7 +29,7 @@ final class GlyphTextField extends StatefulWidget {
 
   final String label;
   final GlyphTextFieldStyle style;
-  final GlyphTextFieldMetrics? metrics;
+  final GlyphTextFieldSize size;
 
   final String? placeholder;
   final TextEditingController? controller;
@@ -132,7 +130,7 @@ class _GlyphTextFieldState extends State<GlyphTextField> {
   @override
   Widget build(BuildContext context) {
     final style = widget.style;
-    final metrics = widget.metrics ?? GlyphTextFieldMetrics.medium();
+    final sz = widget.size;
     final states = _statesController.value;
 
     final bgColor = style.backgroundColor.resolve(states);
@@ -140,9 +138,12 @@ class _GlyphTextFieldState extends State<GlyphTextField> {
     final hintColor = style.hintColor.resolve(states);
     final shadows = style.shadows.resolve(states);
 
-    final labelStyle = metrics.labelTextStyle.copyWith(color: fgColor);
-    final inputStyle = metrics.inputTextStyle.copyWith(color: fgColor);
-    final hintStyle = metrics.inputTextStyle.copyWith(color: hintColor);
+    final labelStyle =
+        style.labelTextStyle.resolve(sz).copyWith(color: fgColor);
+    final inputStyle =
+        style.inputTextStyle.resolve(sz).copyWith(color: fgColor);
+    final hintStyle =
+        style.inputTextStyle.resolve(sz).copyWith(color: hintColor);
 
     final enabledBorder = _toOutlineInputBorder(
       style.shape.resolve(_statesForEnabledBorder(states)),
@@ -153,6 +154,10 @@ class _GlyphTextFieldState extends State<GlyphTextField> {
     final disabledBorder = _toOutlineInputBorder(
       style.shape.resolve({WidgetState.disabled}),
     );
+
+    final contentPadding = style.inputContentPadding.resolve(sz);
+    final trailingGap = style.trailingGap.resolve(sz);
+    final labelBottomSpacing = style.labelBottomSpacing.resolve(sz);
 
     Widget textField = TextField(
       focusNode: _focus,
@@ -167,18 +172,19 @@ class _GlyphTextFieldState extends State<GlyphTextField> {
         filled: true,
         fillColor: bgColor,
         isCollapsed: true,
+        contentPadding: contentPadding,
         hintText: widget.placeholder,
         hintStyle: hintStyle,
-        contentPadding: metrics.inputContentPadding,
         enabledBorder: enabledBorder,
         focusedBorder: focusedBorder,
+        maintainHintSize: false,
         disabledBorder: disabledBorder,
         suffixIcon: widget.trailing == null
             ? null
             : IconTheme(
                 data: IconThemeData(size: 20, color: fgColor),
                 child: Padding(
-                  padding: EdgeInsets.only(right: metrics.trailingGap),
+                  padding: EdgeInsets.only(right: trailingGap),
                   child: widget.trailing,
                 ),
               ),
@@ -211,10 +217,10 @@ class _GlyphTextFieldState extends State<GlyphTextField> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
+            spacing: labelBottomSpacing,
             children: [
               Text(widget.label, style: labelStyle),
-              SizedBox(height: metrics.labelBottomSpacing),
-              SizedBox(height: metrics.minHeight, child: textField),
+              textField,
             ],
           ),
         ),
