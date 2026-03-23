@@ -85,15 +85,9 @@ All tokens live on **`GlyphTextStyles`** (keep the class name so the public type
 
 ---
 
-## Tokens not in Figma (parity with current UI)
+## No extra tokens
 
-Legacy styles that have no exact match get **dedicated `const TextStyle`s** on the same class, documented as “composed from design intent,” so `ThemeData` and widgets stay const-friendly:
-
-| Legacy | Proposed token | Rationale |
-|--------|----------------|-----------|
-| `buttonPrimary` (16 / w600 / accent text) | `filledButtonLabel` | Same size as label medium strong; weight **600** per current filled button; color `GlyphColors.accentSolidText`. |
-| `navLogo` (20 / w700 / primary) | `sidebarBrand` | Based on `titleXsmall` size/spacing/height but **w700** and primary color. |
-| `badge` (11 / w600 / secondary) | `badgeLabel` | Between `labelXsmall` and `label2Xsmall`; keep **11 / w600** until badge spec moves into the scale. |
+Components map to the **named scale only**. There are no separate “button”, “badge”, or “form field” typography tokens — use the closest Title / Subtitle / Paragraph / Label style and [TextStyle.copyWith] **for color** when required (e.g. filled button: `labelMediumStrong` + `copyWith(color: accentSolidText)`).
 
 ---
 
@@ -135,9 +129,9 @@ Adjust if visual QA shows better fits; document changes in the implementation PR
 | `meta` | `labelXsmall` |
 | `metaItem` | `labelSmallStrong` |
 | `price` | `subtitleMediumStrong` + `copyWith` if w600 needed |
-| `navLogo` | `sidebarBrand` |
-| `buttonPrimary` | `filledButtonLabel` |
-| `badge` | `badgeLabel` |
+| `navLogo` | `titleXsmall` |
+| `buttonPrimary` | `labelMediumStrong` + `copyWith(color: accentSolidText)` |
+| `badge` | `label2XsmallStrong` (or nearest label by context) |
 | `summaryTotal` | `titleXsmall` or `subtitleMediumStrong` + weight/color per design |
 
 Exact per-file choices are listed in the implementation plan.

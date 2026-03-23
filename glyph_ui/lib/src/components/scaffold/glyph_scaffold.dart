@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
 
-import '../../tokens/glyph_colors.dart';
-import '../../tokens/glyph_radius.dart';
-import '../../tokens/glyph_spacing.dart';
-import 'glyph_sidebar.dart';
+import '../sidebar/glyph_sidebar.dart';
+import 'glyph_scaffold_metrics.dart';
+import 'glyph_scaffold_style.dart';
 
 /// App-level scaffold that composes a [GlyphSidebar] with a main content area.
 ///
 /// Matches the `.layout-wrapper` structure from the design reference:
-/// - Full-screen [GlyphColors.bgCanvas] background
-/// - 16px inset padding on all sides
-/// - 16px gap between sidebar and main content panel
-/// - Main content wrapped in a white [GlyphColors.bgSurface] panel with
-///   [GlyphRadius.borderLg] corners and a subtle panel shadow
+/// - Full-screen canvas background from [GlyphScaffoldStyle.canvasColor]
+/// - Inset padding and gap from [GlyphScaffoldMetrics]
+/// - Main content in a rounded surface panel with shadow from [GlyphScaffoldStyle]
 ///
 /// Intended to replace [Scaffold] at the root of a desktop/tablet layout.
 ///
 /// ```dart
 /// GlyphScaffold(
+///   style: .standard(),
 ///   sidebar: GlyphSidebar(
+///     style: .standard(),
 ///     brandName: 'Eventis',
 ///     brandIcon: ...,
 ///     groups: [...],
@@ -26,12 +25,19 @@ import 'glyph_sidebar.dart';
 ///   body: TicketsPage(),
 /// )
 /// ```
-class GlyphScaffold extends StatelessWidget {
+final class GlyphScaffold extends StatelessWidget {
   const GlyphScaffold({
     super.key,
+    required this.style,
+    this.metrics,
     required this.sidebar,
     required this.body,
   });
+
+  final GlyphScaffoldStyle style;
+
+  /// Defaults to [GlyphScaffoldMetrics.medium] when omitted.
+  final GlyphScaffoldMetrics? metrics;
 
   final GlyphSidebar sidebar;
 
@@ -40,28 +46,23 @@ class GlyphScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final m = metrics ?? .medium();
+
     return Scaffold(
-      backgroundColor: GlyphColors.bgCanvas,
+      backgroundColor: style.canvasColor,
       body: Padding(
-        padding: const EdgeInsets.all(GlyphSpacing.s4),
+        padding: m.outerPadding,
         child: Row(
+          spacing: m.sidebarContentGap,
           children: [
             sidebar,
-            const SizedBox(width: GlyphSpacing.s4),
             Expanded(
               child: Container(
                 clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(
-                  color: GlyphColors.bgSurface,
-                  borderRadius: GlyphRadius.borderLg,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 25,
-                      offset: const Offset(0, 10),
-                      spreadRadius: -5,
-                    ),
-                  ],
+                  color: style.contentSurfaceColor,
+                  borderRadius: style.contentBorderRadius,
+                  boxShadow: style.contentShadows,
                 ),
                 child: body,
               ),

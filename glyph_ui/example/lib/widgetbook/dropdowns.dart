@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:glyph_ui/glyph_ui.dart';
 import 'package:widgetbook/widgetbook.dart';
+import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+@widgetbook.UseCase(
+  name: 'Dropdown',
+  type: GlyphDropdown,
+  path: '[Glyph]/Dropdown',
+)
 Widget dropdownUseCase(BuildContext context) {
   final size = context.knobs.object.dropdown<String>(
     label: 'Size',
@@ -70,7 +76,7 @@ class _DropdownDemoState extends State<_DropdownDemo> {
               width: 8,
               height: 8,
               decoration: const BoxDecoration(
-                color: GlyphColors.statusSuccess,
+                color: GlyphColors.feedbackSuccess,
                 shape: BoxShape.circle,
               ),
             )

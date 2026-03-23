@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../tokens/glyph_colors.dart';
-import '../../tokens/glyph_radius.dart';
-import '../../tokens/glyph_typography.dart';
+import 'glyph_data_table_metrics.dart';
+import 'glyph_data_table_style.dart';
 
 /// Column definition for [GlyphDataTable].
 ///
@@ -26,81 +25,77 @@ class GlyphColumn<T> {
   final double? fixedWidth;
 }
 
-/// Generic data table with a styled header and hover rows.
+/// Generic data table with a styled header and interactive rows.
 ///
 /// Matches `.table-container` + `table` from the design reference:
-/// - Rounded outer container with [GlyphColors.borderMedium] border
-/// - Gray-50 header row with uppercase 11px column labels
-/// - Body rows separated by [GlyphColors.borderLight] bottom borders
-/// - Subtle hover background on each row
+/// - Rounded outer container with configurable border ([GlyphDataTableStyle])
+/// - Header row with uppercase column labels ([GlyphDataTableMetrics])
+/// - Body rows with hover / press feedback when [onRowTap] is set
 ///
 /// ```dart
 /// GlyphDataTable<Attendee>(
+///   style: GlyphDataTableStyle.standard(),
+///   metrics: GlyphDataTableMetrics.medium(),
 ///   columns: [
 ///     GlyphColumn(
 ///       header: 'Attendee',
 ///       flex: 3,
-///       cell: (row) => Row(children: [
-///         GlyphAvatar(initials: row.initials),
-///         const SizedBox(width: 12),
-///         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-///           Text(row.name, style: GlyphTextStyles.small.copyWith(
-///             fontWeight: FontWeight.w600, color: GlyphColors.textPrimary)),
-///           Text(row.email, style: GlyphTextStyles.meta),
-///         ]),
-///       ]),
-///     ),
-///     GlyphColumn(
-///       header: 'Status',
-///       cell: (row) => GlyphStatusIndicator.checkedIn(),
-///     ),
-///     GlyphColumn(
-///       header: '',
-///       fixedWidth: 50,
-///       cell: (_) => Icon(Icons.more_vert, size: 18,
-///           color: GlyphColors.textTertiary),
+///       cell: (row) => Text(row.name),
 ///     ),
 ///   ],
 ///   rows: attendees,
 ///   onRowTap: (row) => openDetail(row),
 /// )
 /// ```
-class GlyphDataTable<T> extends StatelessWidget {
+final class GlyphDataTable<T> extends StatelessWidget {
   const GlyphDataTable({
     super.key,
     required this.columns,
     required this.rows,
+    required this.style,
+    this.metrics,
     this.onRowTap,
+    this.footer,
   });
 
   final List<GlyphColumn<T>> columns;
   final List<T> rows;
+  final GlyphDataTableStyle style;
+
+  /// Defaults to [GlyphDataTableMetrics.medium] when omitted.
+  final GlyphDataTableMetrics? metrics;
+
   final void Function(T row)? onRowTap;
+
+  /// Optional widget rendered inside the clipped container below the last row.
+  final Widget? footer;
 
   @override
   Widget build(BuildContext context) {
+    final m = metrics ?? .medium();
+
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
-          color: GlyphColors.borderMedium,
-          strokeAlign: BorderSide.strokeAlignOutside,
-        ),
-        borderRadius: GlyphRadius.borderSm,
-        color: GlyphColors.bgSurface,
+        color: style.containerBackgroundColor,
+        border: .fromBorderSide(style.containerBorderSide),
+        borderRadius: style.containerBorderRadius,
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _HeaderRow(columns: columns),
+          _HeaderRow<T>(columns: columns, style: style, metrics: m),
           ...rows.asMap().entries.map(
-            (e) => _DataRow(
+            (e) => _DataRow<T>(
               columns: columns,
               row: e.value,
               isLast: e.key == rows.length - 1,
+              style: style,
+              metrics: m,
               onTap: onRowTap != null ? () => onRowTap!(e.value) : null,
             ),
           ),
+          if (footer != null) footer!,
         ],
       ),
     );
@@ -110,17 +105,23 @@ class GlyphDataTable<T> extends StatelessWidget {
 // ── Internal widgets ──────────────────────────────────────────────────────────
 
 class _HeaderRow<T> extends StatelessWidget {
-  const _HeaderRow({required this.columns});
+  const _HeaderRow({
+    required this.columns,
+    required this.style,
+    required this.metrics,
+  });
 
   final List<GlyphColumn<T>> columns;
+  final GlyphDataTableStyle style;
+  final GlyphDataTableMetrics metrics;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-      decoration: const BoxDecoration(
-        color: Color(0xFFFAFAFA),
-        border: Border(bottom: BorderSide(color: GlyphColors.borderMedium)),
+      padding: metrics.headerPadding,
+      decoration: BoxDecoration(
+        color: style.headerBackgroundColor,
+        border: Border(bottom: style.headerBottomBorderSide),
       ),
       child: Row(
         children: columns
@@ -133,10 +134,8 @@ class _HeaderRow<T> extends StatelessWidget {
   Widget _headerCell(GlyphColumn<T> col) {
     return Text(
       col.header.toUpperCase(),
-      style: GlyphTextStyles.meta.copyWith(
-        fontWeight: FontWeight.w600,
-        color: GlyphColors.textSecondary,
-        letterSpacing: 0.6,
+      style: metrics.headerLabelStyle.copyWith(
+        color: style.headerForegroundColor,
       ),
     );
   }
@@ -154,12 +153,16 @@ class _DataRow<T> extends StatefulWidget {
     required this.columns,
     required this.row,
     required this.isLast,
+    required this.style,
+    required this.metrics,
     this.onTap,
   });
 
   final List<GlyphColumn<T>> columns;
   final T row;
   final bool isLast;
+  final GlyphDataTableStyle style;
+  final GlyphDataTableMetrics metrics;
   final VoidCallback? onTap;
 
   @override
@@ -167,33 +170,81 @@ class _DataRow<T> extends StatefulWidget {
 }
 
 class _DataRowState<T> extends State<_DataRow<T>> {
-  bool _hovered = false;
+  final _controller = WidgetStatesController();
+
+  bool get _isDisabled => widget.onTap == null;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() => setState(() {}));
+    _controller.update(.disabled, _isDisabled);
+  }
+
+  @override
+  void didUpdateWidget(covariant _DataRow<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _controller.update(.disabled, _isDisabled);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onTapDown(TapDownDetails _) {
+    _controller.update(.pressed, true);
+  }
+
+  void _onTapUp(TapUpDetails _) {
+    _controller.update(.pressed, false);
+    widget.onTap?.call();
+  }
+
+  void _onTapCancel() {
+    _controller.update(.pressed, false);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: widget.onTap != null
-          ? SystemMouseCursors.click
-          : MouseCursor.defer,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 100),
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-          decoration: BoxDecoration(
-            color: _hovered ? const Color(0xFFFAFAFB) : GlyphColors.bgSurface,
-            border: widget.isLast
-                ? null
-                : const Border(
-                    bottom: BorderSide(color: GlyphColors.borderLight),
-                  ),
-          ),
-          child: Row(
-            children: widget.columns
-                .map((col) => _wrapCell(col, col.cell(widget.row)))
-                .toList(),
+    final style = widget.style;
+    final metrics = widget.metrics;
+    final states = _controller.value;
+    final rowBg = style.rowBackgroundColor.resolve(states);
+
+    return Semantics(
+      container: true,
+      onTap: widget.onTap,
+      child: Focus(
+        onFocusChange: (focused) => _controller.update(.focused, focused),
+        child: MouseRegion(
+          cursor: _isDisabled
+              ? SystemMouseCursors.basic
+              : SystemMouseCursors.click,
+          onEnter: (_) => _controller.update(.hovered, true),
+          onExit: (_) => _controller.update(.hovered, false),
+          child: GestureDetector(
+            onTapDown: _isDisabled ? null : _onTapDown,
+            onTapUp: _isDisabled ? null : _onTapUp,
+            onTapCancel: _isDisabled ? null : _onTapCancel,
+            behavior: HitTestBehavior.opaque,
+            child: AnimatedContainer(
+              duration: style.rowAnimationDuration,
+              curve: style.rowAnimationCurve,
+              padding: metrics.rowPadding,
+              decoration: BoxDecoration(
+                color: rowBg,
+                border: widget.isLast
+                    ? null
+                    : Border(bottom: style.rowBottomBorderSide),
+              ),
+              child: Row(
+                children: widget.columns
+                    .map((col) => _wrapCell(col, col.cell(widget.row)))
+                    .toList(),
+              ),
+            ),
           ),
         ),
       ),

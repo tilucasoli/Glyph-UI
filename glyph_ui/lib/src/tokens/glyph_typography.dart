@@ -2,139 +2,215 @@ import 'package:flutter/material.dart';
 
 import 'glyph_colors.dart';
 
-/// Typography constants from the Glyph design system.
+/// Typography tokens for the Glyph design system (Title, Subtitle, Paragraph,
+/// Label scales only).
 ///
-/// Font sizes converted from rem (base 16px):
-///   2rem    → 32px  (h1)
-///   1.25rem → 20px  (h2)
-///   1.125rem→ 18px  (ticket-price)
-///   1rem    → 16px  (h3, btn)
-///   0.9375rem→ 15px (body)
-///   0.875rem → 14px (meta-item)
-///   0.8125rem→ 13px (small)
-///   0.75rem → 12px  (meta)
-///   0.6875rem→ 11px (availability badge)
-///
-/// Letter spacing converted from em: value * fontSize.
+/// Components use [GlyphTextStyles] only — no raw [TextStyle] literals.
+/// [TextStyle.copyWith] is allowed for **color** when driven by style/state/theme.
 abstract final class GlyphTextStyles {
   static const String _fontFamily = 'Inter';
 
-  /// h1 — 32px, w700, letterSpacing -0.96
-  static const TextStyle h1 = TextStyle(
+  // ── Title ─────────────────────────────────────────────────────────────────
+  static const TextStyle titleXlarge = TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 32,
-    fontWeight: FontWeight.w700,
-    letterSpacing: -0.96,
+    fontSize: 44,
+    fontWeight: FontWeight.w500,
     height: 1.1,
-    color: GlyphColors.textPrimary,
+    letterSpacing: -1.3,
+    color: GlyphColors.content,
   );
 
-  /// h2 — 20px, w600, letterSpacing -0.4
-  static const TextStyle h2 = TextStyle(
+  static const TextStyle titleLarge = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: 36,
+    fontWeight: FontWeight.w500,
+    height: 1.1,
+    letterSpacing: -1.1,
+    color: GlyphColors.content,
+  );
+
+  static const TextStyle titleMedium = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: 28,
+    fontWeight: FontWeight.w500,
+    height: 1.2,
+    letterSpacing: -0.8,
+    color: GlyphColors.content,
+  );
+
+  static const TextStyle titleSmall = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: 24,
+    fontWeight: FontWeight.w500,
+    height: 1.2,
+    letterSpacing: -0.5,
+    color: GlyphColors.content,
+  );
+
+  static const TextStyle titleXsmall = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 20,
-    fontWeight: FontWeight.w600,
-    letterSpacing: -0.4,
-    color: GlyphColors.textPrimary,
+    fontWeight: FontWeight.w500,
+    height: 1.2,
+    letterSpacing: -0.5,
+    color: GlyphColors.content,
   );
 
-  /// h3 — 16px, w600
-  static const TextStyle h3 = TextStyle(
+  // ── Subtitle (sizes that alias labels are declared after [labelMedium].) ───
+
+  static const TextStyle subtitleMedium = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: 18,
+    fontWeight: FontWeight.w400,
+    height: 1.3,
+    letterSpacing: -0.2,
+    color: GlyphColors.content,
+  );
+
+  static const TextStyle subtitleMediumStrong = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: 18,
+    fontWeight: FontWeight.w500,
+    height: 1.3,
+    letterSpacing: -0.2,
+    color: GlyphColors.content,
+  );
+
+  // ── Label (shared 16px rows; subtitle aliases follow) ──────────────────────
+
+  static const TextStyle labelMedium = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 16,
-    fontWeight: FontWeight.w600,
-    color: GlyphColors.textPrimary,
-  );
-
-  /// .text-body — 15px, secondary color
-  static const TextStyle body = TextStyle(
-    fontFamily: _fontFamily,
-    fontSize: 15,
     fontWeight: FontWeight.w400,
-    color: GlyphColors.textSecondary,
+    height: 1.3,
+    letterSpacing: -0.2,
+    color: GlyphColors.contentSubtle,
   );
 
-  /// .text-small — 13px, secondary color, w500
-  static const TextStyle small = TextStyle(
+  static const TextStyle labelMediumStrong = TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: FontWeight.w500,
-    color: GlyphColors.textSecondary,
-    leadingDistribution: TextLeadingDistribution.proportional,
+    height: 1.3,
+    letterSpacing: -0.2,
+    color: GlyphColors.contentSubtle,
   );
 
-  /// .text-meta — 12px, secondary color
-  static const TextStyle meta = TextStyle(
+  static const TextStyle subtitleSmall = labelMedium;
+  static const TextStyle subtitleSmallStrong = labelMediumStrong;
+
+  // ── Paragraph ─────────────────────────────────────────────────────────────
+
+  static const TextStyle paragraphMedium = TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: FontWeight.w400,
-    color: GlyphColors.textSecondary,
+    height: 1.5,
+    letterSpacing: -0.2,
+    color: GlyphColors.contentSubtle,
   );
 
-  /// meta-item — 14px, secondary color, w500
-  static const TextStyle metaItem = TextStyle(
+  static const TextStyle paragraphMediumStrong = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    height: 1.5,
+    letterSpacing: -0.2,
+    color: GlyphColors.contentSubtle,
+  );
+
+  static const TextStyle paragraphSmall = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    height: 1.5,
+    letterSpacing: -0.1,
+    color: GlyphColors.contentSubtle,
+  );
+
+  static const TextStyle paragraphSmallStrong = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 14,
     fontWeight: FontWeight.w500,
-    color: GlyphColors.textSecondary,
+    height: 1.5,
+    letterSpacing: -0.1,
+    color: GlyphColors.contentSubtle,
   );
 
-  /// ticket-price — 18px, w600, primary color
-  static const TextStyle price = TextStyle(
+  // ── Label (smaller steps) ─────────────────────────────────────────────────
+
+  static const TextStyle labelSmall = TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 18,
-    fontWeight: FontWeight.w600,
-    color: GlyphColors.textPrimary,
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    height: 1.3,
+    letterSpacing: -0.1,
+    color: GlyphColors.contentSubtle,
   );
 
-  /// nav-logo — 20px, w700, letterSpacing -0.6
-  static const TextStyle navLogo = TextStyle(
+  static const TextStyle labelSmallStrong = TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 20,
-    fontWeight: FontWeight.w700,
-    letterSpacing: -0.6,
-    color: GlyphColors.textPrimary,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    height: 1.3,
+    letterSpacing: -0.1,
+    color: GlyphColors.contentSubtle,
   );
 
-  /// btn-primary label — 16px, w600
-  static const TextStyle buttonPrimary = TextStyle(
+  static const TextStyle labelXsmall = TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 16,
-    fontWeight: FontWeight.w600,
-    color: GlyphColors.accentSolidText,
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    height: 1.3,
+    letterSpacing: 0,
+    color: GlyphColors.contentSubtle,
   );
 
-  /// availability badge — 11px, w600
-  static const TextStyle badge = TextStyle(
+  static const TextStyle labelXsmallStrong = TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 11,
-    fontWeight: FontWeight.w600,
-    color: GlyphColors.textSecondary,
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    height: 1.3,
+    letterSpacing: 0,
+    color: GlyphColors.contentSubtle,
   );
 
-  /// summary total — 20px, w700
-  static const TextStyle summaryTotal = TextStyle(
+  static const TextStyle label2Xsmall = TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 20,
-    fontWeight: FontWeight.w700,
-    color: GlyphColors.textPrimary,
+    fontSize: 10,
+    fontWeight: FontWeight.w400,
+    height: 1.3,
+    letterSpacing: 0,
+    color: GlyphColors.contentSubtle,
+  );
+
+  static const TextStyle label2XsmallStrong = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: 10,
+    fontWeight: FontWeight.w500,
+    height: 1.3,
+    letterSpacing: 0,
+    color: GlyphColors.contentSubtle,
   );
 
   /// Builds a [TextTheme] for use with [ThemeData].
   static TextTheme buildTextTheme() {
     return const TextTheme(
-      // h1
-      displayLarge: h1,
-      // h2
-      titleLarge: h2,
-      // h3
-      titleMedium: h3,
-      // body
-      bodyMedium: body,
-      // small
-      bodySmall: small,
-      // meta
-      labelSmall: meta,
+      displayLarge: titleXlarge,
+      displayMedium: titleLarge,
+      displaySmall: titleMedium,
+      headlineLarge: titleSmall,
+      headlineMedium: titleXsmall,
+      headlineSmall: subtitleMediumStrong,
+      titleLarge: subtitleSmallStrong,
+      titleMedium: paragraphSmallStrong,
+      titleSmall: labelXsmallStrong,
+      bodyLarge: paragraphMedium,
+      bodyMedium: paragraphSmall,
+      bodySmall: labelXsmall,
+      labelLarge: labelMediumStrong,
+      labelMedium: labelSmallStrong,
+      labelSmall: label2XsmallStrong,
     );
   }
 }

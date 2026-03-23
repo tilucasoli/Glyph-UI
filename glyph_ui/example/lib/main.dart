@@ -10,8 +10,8 @@ import 'widgetbook/dropdowns.dart';
 import 'widgetbook/forms.dart';
 import 'widgetbook/layout.dart';
 import 'widgetbook/nav.dart';
-import 'widgetbook/payment.dart';
-import 'widgetbook/tokens.dart';
+import 'widgetbook/sidebar.dart';
+import 'widgetbook/table.dart';
 
 void main() {
   runApp(const GlyphWidgetbookApp());
@@ -34,58 +34,14 @@ class GlyphWidgetbookApp extends StatelessWidget {
   }
 }
 
-/// Manual directory structure for the widget catalog.
-/// All components are centralized under a single folder.
+/// Manual directory structure for the widget catalog (components only).
 final directories = [
   WidgetbookFolder(
     name: 'Components',
     children: [
       WidgetbookComponent(
-        name: 'Button',
-        useCases: [WidgetbookUseCase(name: 'Button', builder: buttonUseCase)],
-      ),
-      WidgetbookComponent(
-        name: 'Icon Button',
-        useCases: [
-          WidgetbookUseCase(name: 'Icon Button', builder: iconButtonUseCase),
-        ],
-      ),
-      WidgetbookComponent(
-        name: 'GlyphCard',
-        useCases: [WidgetbookUseCase(name: 'Default', builder: cardDefault)],
-      ),
-      WidgetbookComponent(
-        name: 'GlyphPaymentMethodCard',
-        useCases: [
-          WidgetbookUseCase(
-            name: 'Payment Method Cards',
-            builder: paymentMethodCards,
-          ),
-        ],
-      ),
-      WidgetbookComponent(
-        name: 'Colors',
-        useCases: [WidgetbookUseCase(name: 'Colors', builder: colorsToken)],
-      ),
-      WidgetbookComponent(
-        name: 'Spacing',
-        useCases: [WidgetbookUseCase(name: 'Spacing', builder: spacingToken)],
-      ),
-      WidgetbookComponent(
-        name: 'Typography',
-        useCases: [
-          WidgetbookUseCase(name: 'Typography', builder: typographyToken),
-        ],
-      ),
-      WidgetbookComponent(
-        name: 'GlyphTextField',
-        useCases: [
-          WidgetbookUseCase(name: 'Text Field (Medium)', builder: inputField),
-          WidgetbookUseCase(
-            name: 'Text Field (Large)',
-            builder: inputFieldTrailing,
-          ),
-        ],
+        name: 'GlyphAppBar',
+        useCases: [WidgetbookUseCase(name: 'App Bar', builder: appBar)],
       ),
       WidgetbookComponent(
         name: 'GlyphBadge',
@@ -98,24 +54,57 @@ final directories = [
         ],
       ),
       WidgetbookComponent(
+        name: 'GlyphButton',
+        useCases: [WidgetbookUseCase(name: 'Button', builder: buttonUseCase)],
+      ),
+      WidgetbookComponent(
+        name: 'GlyphCard',
+        useCases: [WidgetbookUseCase(name: 'Default', builder: cardDefault)],
+      ),
+      // WidgetbookComponent(
+      //   name: 'GlyphDataTable',
+      //   useCases: [
+      //     WidgetbookUseCase(name: 'Data Table', builder: dataTableUseCase),
+      //   ],
+      // ),
+      WidgetbookComponent(
+        name: 'GlyphDropdown',
+        useCases: [
+          WidgetbookUseCase(name: 'Dropdown', builder: dropdownUseCase),
+        ],
+      ),
+      WidgetbookComponent(
+        name: 'GlyphIconButton',
+        useCases: [
+          WidgetbookUseCase(name: 'Icon Button', builder: iconButtonUseCase),
+        ],
+      ),
+      WidgetbookComponent(
         name: 'GlyphPagination',
         useCases: [WidgetbookUseCase(name: 'Pagination', builder: pagination)],
       ),
       WidgetbookComponent(
-        name: 'GlyphNotificationDot',
+        name: 'GlyphScaffold',
         useCases: [
-          WidgetbookUseCase(name: 'Notification Dot', builder: notificationDot),
+          WidgetbookUseCase(name: 'Scaffold', builder: scaffoldUseCase),
         ],
       ),
       WidgetbookComponent(
-        name: 'GlyphDropdown',
+        name: 'GlyphSidebar',
+        useCases: [WidgetbookUseCase(name: 'Sidebar', builder: sidebarUseCase)],
+      ),
+      WidgetbookComponent(
+        name: 'GlyphSidebarItemTile',
         useCases: [
-          .new(name: 'Dropdown', builder: dropdownUseCase),
+          WidgetbookUseCase(
+            name: 'Sidebar Item Tile',
+            builder: sidebarItemTileUseCase,
+          ),
         ],
       ),
       WidgetbookComponent(
-        name: 'GlyphAppBar',
-        useCases: [.new(name: 'App Bar', builder: appBar)],
+        name: 'GlyphTextField',
+        useCases: [WidgetbookUseCase(name: 'Default', builder: textField)],
       ),
     ],
   ),

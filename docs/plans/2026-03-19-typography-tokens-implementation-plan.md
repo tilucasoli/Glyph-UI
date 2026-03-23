@@ -2,7 +2,7 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Replace legacy typography members on `GlyphTextStyles` with the new Title / Subtitle / Paragraph / Label scale (plus three parity tokens), update `buildTextTheme()`, and migrate every in-repo usage under `glyph_ui/` and `glyph_ui/example/`.
+**Goal:** Replace legacy typography members on `GlyphTextStyles` with the Title / Subtitle / Paragraph / Label scale **only** (no extra named tokens), update `buildTextTheme()`, and migrate every in-repo usage under `glyph_ui/` and `glyph_ui/example/`.
 
 **Architecture:** Single source file `glyph_typography.dart` holds all `const TextStyle` tokens. Semantic duplicates (`subtitleSmall` ≡ `labelMedium`, etc.) are `static const` aliases. `glyph_theme.dart` and component metrics/widgets swap old identifiers for new ones. No deprecated shims (big-bang).
 
@@ -21,12 +21,9 @@
 
 1. Remove legacy styles (`h1`, `h2`, `h3`, `body`, `small`, `meta`, `metaItem`, `price`, `navLogo`, `buttonPrimary`, `badge`, `summaryTotal`).
 2. Add all tokens from the design doc in order: define **`labelMedium` before** `subtitleSmall` so you can write `static const TextStyle subtitleSmall = labelMedium;` and `subtitleSmallStrong = labelMediumStrong;`.
-3. Add parity tokens (exact `const` values, documented in doc comments):
-   - `filledButtonLabel` — 16px, `FontWeight.w600`, `GlyphColors.accentSolidText` (same letter spacing as `labelMediumStrong`: -0.2; use `height: 1.3` to match label rhythm unless QA prefers default line height).
-   - `sidebarBrand` — match `titleXsmall` metrics (20 / 1.2 / -0.5) with `FontWeight.w700`, `GlyphColors.textPrimary`.
-   - `badgeLabel` — 11px, `FontWeight.w600`, `height: 1.3`, `GlyphColors.textSecondary`, letter spacing `0` (closest to small label cadence).
+3. Do **not** add component-specific tokens; map widgets to the scale (use `copyWith(color: …)` only where needed).
 4. Reimplement `buildTextTheme()` using the mapping table in the design doc.
-5. Update the top-level library doc comment (remove obsolete rem table; summarize roles).
+5. Update the top-level library doc comment.
 
 **Verify:** `cd glyph_ui && fvm dart analyze lib/src/tokens/glyph_typography.dart` — no issues.
 
@@ -41,8 +38,8 @@
 
 **Steps:**
 
-1. Replace `GlyphTextStyles.buttonPrimary` → `GlyphTextStyles.filledButtonLabel` in `filledButtonTheme`.
-2. Replace `GlyphTextStyles.navLogo` → `GlyphTextStyles.sidebarBrand` in `AppBarTheme` / `titleTextStyle` (or equivalent block in file).
+1. Filled button `textStyle`: `labelMediumStrong.copyWith(color: GlyphColors.accentSolidText)` (non-const `WidgetStatePropertyAll` if needed).
+2. `AppBarTheme.titleTextStyle`: `titleXsmall`.
 
 **Verify:** `fvm dart analyze lib/src/theme/glyph_theme.dart`
 
@@ -74,7 +71,7 @@
 
 **Steps:**
 
-1. `navLogo` → `sidebarBrand` in `glyph_sidebar.dart`.
+1. Brand text → `titleXsmall` in `glyph_sidebar.dart`.
 2. `GlyphTextStyles.small` → `labelSmallStrong` for nav item base (was 13px w500; new equivalent 14 w500).
 3. `GlyphTextStyles.meta` → `labelXsmall` for group title base in `glyph_sidebar_style.dart`.
 
@@ -161,9 +158,9 @@
 
 **Steps:**
 
-1. `GlyphTextStyles.badge` → `GlyphTextStyles.badgeLabel`.
+1. Badge label → `label2XsmallStrong` (or another label token from the scale).
 
-**Commit:** `git commit -am "fix(badge): use badgeLabel token"`
+**Commit:** `git commit -am "fix(badge): use label scale for badge text"`
 
 ---
 

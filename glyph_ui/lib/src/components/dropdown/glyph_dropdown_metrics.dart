@@ -27,7 +27,7 @@ final class GlyphDropdownMetrics {
     return const .new(
       triggerPadding: .symmetric(vertical: 8, horizontal: 14),
       triggerMinHeight: 40,
-      triggerLabelTextStyle: GlyphTextStyles.small,
+      triggerLabelTextStyle: GlyphTextStyles.labelSmallStrong,
       triggerLeadingGap: 8,
       chevronSize: 14,
     );
@@ -37,7 +37,7 @@ final class GlyphDropdownMetrics {
     return const .new(
       triggerPadding: .symmetric(vertical: 10, horizontal: 16),
       triggerMinHeight: 48,
-      triggerLabelTextStyle: GlyphTextStyles.metaItem,
+      triggerLabelTextStyle: GlyphTextStyles.labelSmallStrong,
       triggerLeadingGap: 10,
       chevronSize: 16,
     );

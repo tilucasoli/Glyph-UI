@@ -1,0 +1,40 @@
+---
+description: Use FVM for Flutter and Dart CLI; never raw flutter/dart on PATH
+alwaysApply: true
+---
+
+# Use FVM, Not Raw Flutter/Dart CLI
+
+This project uses [FVM](https://fvm.app/) to pin the Flutter SDK. **Always** invoke Flutter and Dart through FVM so the correct SDK version runs.
+
+## Commands
+
+Prefix every Flutter or Dart CLI invocation with `fvm`:
+
+| Instead of | Use |
+|------------|-----|
+| `flutter ...` | `fvm flutter ...` |
+| `dart ...` | `fvm dart ...` |
+
+Examples:
+
+```bash
+# BAD
+flutter pub get
+flutter analyze
+flutter test
+dart run build_runner build
+
+# GOOD
+fvm flutter pub get
+fvm flutter analyze
+fvm flutter test
+fvm dart run build_runner build
+```
+
+## Agent behavior
+
+- When suggesting or running shell commands for this repo, use `fvm flutter` / `fvm dart`.
+- Do not assume a global `flutter` on PATH is the project SDK.
+
+If FVM is not installed, document that the user should install FVM and run `fvm use` per project docs rather than switching to raw `flutter` as the default workflow.

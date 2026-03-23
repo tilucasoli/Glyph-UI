@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../tokens/glyph_colors.dart';
 import '../../tokens/glyph_typography.dart';
 import 'glyph_dropdown_metrics.dart';
 import 'glyph_dropdown_style.dart';
@@ -210,8 +211,7 @@ class _GlyphDropdownState<T> extends State<GlyphDropdown<T>>
     final label = selected?.label ?? widget.placeholder ?? '';
     final leading = widget.leading ?? selected?.leading;
     final dir = widget.direction;
-    final dropdownStyle =
-        widget.dropdownStyle ?? GlyphDropdownStyle.standard();
+    final dropdownStyle = widget.dropdownStyle ?? GlyphDropdownStyle.standard();
     final metrics = widget.metrics ?? GlyphDropdownMetrics.medium();
 
     return CompositedTransformTarget(
@@ -221,10 +221,7 @@ class _GlyphDropdownState<T> extends State<GlyphDropdown<T>>
         overlayChildBuilder: (ctx) => Stack(
           children: [
             Positioned.fill(
-              child: GestureDetector(
-                onTap: _close,
-                behavior: .opaque,
-              ),
+              child: GestureDetector(onTap: _close, behavior: .opaque),
             ),
             CompositedTransformFollower(
               link: _layerLink,
@@ -303,8 +300,9 @@ class _DropdownTrigger extends StatelessWidget {
       child: Focus(
         onFocusChange: (f) => controller.update(.focused, f),
         child: MouseRegion(
-          cursor:
-              isDisabled ? SystemMouseCursors.basic : SystemMouseCursors.click,
+          cursor: isDisabled
+              ? SystemMouseCursors.basic
+              : SystemMouseCursors.click,
           onEnter: (_) => controller.update(.hovered, true),
           onExit: (_) => controller.update(.hovered, false),
           child: GestureDetector(
@@ -335,20 +333,22 @@ class _DropdownTrigger extends StatelessWidget {
                         label,
                         style: metrics.triggerLabelTextStyle.copyWith(
                           color: fgColor,
-                          fontWeight: .w500,
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(width: 12),
                   RotationTransition(
-                    turns: Tween(
-                      begin: direction.chevronBegin,
-                      end: direction.chevronEnd,
-                    ).animate(CurvedAnimation(
-                      parent: chevronAnim,
-                      curve: Curves.easeInOut,
-                    )),
+                    turns:
+                        Tween(
+                          begin: direction.chevronBegin,
+                          end: direction.chevronEnd,
+                        ).animate(
+                          CurvedAnimation(
+                            parent: chevronAnim,
+                            curve: Curves.easeInOut,
+                          ),
+                        ),
                     child: Icon(
                       Icons.keyboard_arrow_down_rounded,
                       size: metrics.chevronSize,
@@ -387,7 +387,7 @@ class _DropdownPanel<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.transparent,
+      color: GlyphColors.surface,
       child: Container(
         constraints: BoxConstraints(minWidth: minWidth),
         padding: const EdgeInsets.all(8),
@@ -406,10 +406,8 @@ class _DropdownPanel<T> extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(10, 6, 10, 8),
                 child: Text(
                   header!.toUpperCase(),
-                  style: GlyphTextStyles.meta.copyWith(
-                    fontWeight: .w600,
+                  style: GlyphTextStyles.labelXsmallStrong.copyWith(
                     color: style.headerColor,
-                    letterSpacing: 0.6,
                   ),
                 ),
               ),
@@ -456,8 +454,8 @@ class _DropdownOptionState<T> extends State<_DropdownOption<T>> {
     final bgColor = widget.isSelected
         ? style.optionSelectedBackgroundColor
         : _hovered
-            ? style.optionHoveredBackgroundColor
-            : style.optionBackgroundColor;
+        ? style.optionHoveredBackgroundColor
+        : style.optionBackgroundColor;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -481,9 +479,8 @@ class _DropdownOptionState<T> extends State<_DropdownOption<T>> {
               ],
               Text(
                 widget.item.label,
-                style: GlyphTextStyles.small.copyWith(
+                style: GlyphTextStyles.labelSmallStrong.copyWith(
                   color: style.optionForegroundColor,
-                  fontWeight: .w500,
                 ),
               ),
               const Spacer(),

@@ -36,24 +36,24 @@ final class GlyphDropdownStyle {
 
   factory GlyphDropdownStyle.standard() {
     return .new(
-      panelBackgroundColor: GlyphColors.bgSurface,
-      panelBorderSide: BorderSide(color: GlyphColors.borderMedium),
-      panelBorderRadius: GlyphRadius.borderSm,
+      panelBackgroundColor: GlyphColors.surface,
+      panelBorderSide: BorderSide(color: GlyphColors.border),
+      panelBorderRadius: GlyphRadius.borderMedium,
       panelShadows: [
         BoxShadow(
-          color: const Color(0xFF000000).withValues(alpha: 0.08),
+          color: GlyphColors.content.withValues(alpha: 0.08),
           blurRadius: 24,
           offset: const .new(0, 8),
           spreadRadius: -4,
         ),
       ],
-      headerColor: GlyphColors.textTertiary,
-      optionBackgroundColor: const Color(0x00000000),
-      optionSelectedBackgroundColor: GlyphColors.bgSidebar,
-      optionHoveredBackgroundColor: GlyphColors.bgBody,
-      optionForegroundColor: GlyphColors.textPrimary,
-      optionBorderRadius: GlyphRadius.borderSm,
-      checkmarkColor: GlyphColors.textPrimary,
+      headerColor: GlyphColors.contentDisabled,
+      optionBackgroundColor: GlyphColors.surface,
+      optionSelectedBackgroundColor: GlyphColors.surfaceSubtle,
+      optionHoveredBackgroundColor: GlyphColors.surfaceSubtle,
+      optionForegroundColor: GlyphColors.contentSubtle,
+      optionBorderRadius: GlyphRadius.borderMedium,
+      checkmarkColor: GlyphColors.accentPrimary,
     );
   }
 
@@ -76,12 +76,14 @@ final class GlyphDropdownStyle {
       panelBorderRadius: panelBorderRadius ?? this.panelBorderRadius,
       panelShadows: panelShadows ?? this.panelShadows,
       headerColor: headerColor ?? this.headerColor,
-      optionBackgroundColor: optionBackgroundColor ?? this.optionBackgroundColor,
+      optionBackgroundColor:
+          optionBackgroundColor ?? this.optionBackgroundColor,
       optionSelectedBackgroundColor:
           optionSelectedBackgroundColor ?? this.optionSelectedBackgroundColor,
       optionHoveredBackgroundColor:
           optionHoveredBackgroundColor ?? this.optionHoveredBackgroundColor,
-      optionForegroundColor: optionForegroundColor ?? this.optionForegroundColor,
+      optionForegroundColor:
+          optionForegroundColor ?? this.optionForegroundColor,
       optionBorderRadius: optionBorderRadius ?? this.optionBorderRadius,
       checkmarkColor: checkmarkColor ?? this.checkmarkColor,
     );

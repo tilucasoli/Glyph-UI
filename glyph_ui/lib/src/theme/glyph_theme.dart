@@ -18,22 +18,22 @@ abstract final class GlyphTheme {
   static ThemeData light() {
     final colorScheme = const ColorScheme.light(
       // accent-solid → primary
-      primary: GlyphColors.accentSolid,
-      onPrimary: GlyphColors.accentSolidText,
+      primary: GlyphColors.accentPrimary,
+      onPrimary: GlyphColors.surface,
       // bg-surface → surface
-      surface: GlyphColors.bgSurface,
-      onSurface: GlyphColors.textPrimary,
+      surface: GlyphColors.surface,
+      onSurface: GlyphColors.content,
       // bg-body → surfaceContainerLowest
-      surfaceContainerLowest: GlyphColors.bgBody,
+      surfaceContainerLowest: GlyphColors.surfaceSubtle,
       // accent-danger → error
-      error: GlyphColors.accentDanger,
-      onError: GlyphColors.accentSolidText,
+      error: GlyphColors.feedbackError,
+      onError: GlyphColors.surface,
       // borders
-      outlineVariant: GlyphColors.borderLight,
-      outline: GlyphColors.borderMedium,
+      outlineVariant: GlyphColors.border,
+      outline: GlyphColors.borderStrong,
       // secondary text
-      secondary: GlyphColors.textSecondary,
-      onSecondary: GlyphColors.accentSolidText,
+      secondary: GlyphColors.contentSubtle,
+      onSecondary: GlyphColors.surface,
     );
 
     final textTheme = GlyphTextStyles.buildTextTheme();
@@ -42,16 +42,16 @@ abstract final class GlyphTheme {
       useMaterial3: true,
       colorScheme: colorScheme,
       textTheme: textTheme,
-      scaffoldBackgroundColor: GlyphColors.bgBody,
+      scaffoldBackgroundColor: GlyphColors.surfaceSubtle,
       fontFamily: 'Inter',
 
       // ── Card ──────────────────────────────────────────────────────────────
       cardTheme: CardThemeData(
-        color: GlyphColors.bgSurface,
+        color: GlyphColors.surface,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: GlyphRadius.borderLg,
-          side: const BorderSide(color: GlyphColors.borderLight),
+          borderRadius: GlyphRadius.borderLarge,
+          side: const BorderSide(color: GlyphColors.border),
         ),
         margin: EdgeInsets.zero,
       ),
@@ -59,18 +59,21 @@ abstract final class GlyphTheme {
       // ── Elevated / Filled Button (maps to btn-primary) ────────────────────
       filledButtonTheme: FilledButtonThemeData(
         style: ButtonStyle(
-          backgroundColor: const WidgetStatePropertyAll(GlyphColors.accentSolid),
+          backgroundColor:
+              const WidgetStatePropertyAll(GlyphColors.accentPrimary),
           foregroundColor:
-              const WidgetStatePropertyAll(GlyphColors.accentSolidText),
+              const WidgetStatePropertyAll(GlyphColors.surface),
           minimumSize: const WidgetStatePropertyAll(Size(double.infinity, 56)),
           padding: const WidgetStatePropertyAll(
             EdgeInsets.symmetric(vertical: 18, horizontal: 24),
           ),
           shape: const WidgetStatePropertyAll(
-            RoundedRectangleBorder(borderRadius: GlyphRadius.borderMd),
+            RoundedRectangleBorder(borderRadius: GlyphRadius.borderLarge),
           ),
-          textStyle: const WidgetStatePropertyAll(
-            GlyphTextStyles.buttonPrimary,
+          textStyle: WidgetStatePropertyAll(
+            GlyphTextStyles.labelMediumStrong.copyWith(
+              color: GlyphColors.surface,
+            ),
           ),
           elevation: const WidgetStatePropertyAll(0),
         ),
@@ -80,9 +83,9 @@ abstract final class GlyphTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: ButtonStyle(
           foregroundColor:
-              const WidgetStatePropertyAll(GlyphColors.textPrimary),
+              const WidgetStatePropertyAll(GlyphColors.content),
           side: const WidgetStatePropertyAll(
-            BorderSide(color: GlyphColors.borderLight),
+            BorderSide(color: GlyphColors.border),
           ),
           shape: const WidgetStatePropertyAll(
             RoundedRectangleBorder(borderRadius: GlyphRadius.borderPill),
@@ -93,7 +96,7 @@ abstract final class GlyphTheme {
 
       // ── Divider ───────────────────────────────────────────────────────────
       dividerTheme: const DividerThemeData(
-        color: GlyphColors.borderLight,
+        color: GlyphColors.border,
         thickness: 1,
         space: 0,
       ),
@@ -101,33 +104,33 @@ abstract final class GlyphTheme {
       // ── Input ─────────────────────────────────────────────────────────────
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: GlyphColors.bgSurface,
+        fillColor: GlyphColors.surface,
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: GlyphSpacing.s4,
-          vertical: GlyphSpacing.s3,
+          horizontal: Spacing.x4,
+          vertical: Spacing.x3,
         ),
         border: OutlineInputBorder(
-          borderRadius: GlyphRadius.borderMd,
-          borderSide: const BorderSide(color: GlyphColors.borderLight),
+          borderRadius: GlyphRadius.borderLarge,
+          borderSide: const BorderSide(color: GlyphColors.border),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: GlyphRadius.borderMd,
-          borderSide: const BorderSide(color: GlyphColors.borderLight),
+          borderRadius: GlyphRadius.borderLarge,
+          borderSide: const BorderSide(color: GlyphColors.border),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: GlyphRadius.borderMd,
-          borderSide: const BorderSide(color: GlyphColors.textPrimary),
+          borderRadius: GlyphRadius.borderLarge,
+          borderSide: const BorderSide(color: GlyphColors.accentPrimary),
         ),
       ),
 
       // ── AppBar ────────────────────────────────────────────────────────────
       appBarTheme: const AppBarTheme(
-        backgroundColor: GlyphColors.bgSurface,
-        foregroundColor: GlyphColors.textPrimary,
+        backgroundColor: GlyphColors.surface,
+        foregroundColor: GlyphColors.content,
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
-        titleTextStyle: GlyphTextStyles.navLogo,
+        titleTextStyle: GlyphTextStyles.titleXsmall,
       ),
 
       // ── Theme extensions ──────────────────────────────────────────────────

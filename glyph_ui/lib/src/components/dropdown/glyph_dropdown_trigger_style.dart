@@ -26,31 +26,31 @@ final class GlyphDropdownTriggerStyle {
     return .new(
       backgroundColor: .resolveWith((states) {
         if (states.contains(WidgetState.disabled)) {
-          return GlyphColors.borderLight;
+          return GlyphColors.surfaceStrong;
         }
         if (states.contains(WidgetState.pressed)) {
-          return GlyphColors.borderMedium;
+          return GlyphColors.borderStrong;
         }
-        if (states.contains(WidgetState.hovered)) return GlyphColors.bgBody;
-        return GlyphColors.bgSurface;
+        if (states.contains(WidgetState.hovered)) return GlyphColors.surfaceSubtle;
+        return GlyphColors.surface;
       }),
       foregroundColor: .resolveWith((states) {
         if (states.contains(WidgetState.disabled)) {
-          return GlyphColors.textTertiary;
+          return GlyphColors.contentDisabled;
         }
-        return GlyphColors.textPrimary;
+        return GlyphColors.content;
       }),
       shape: .all(
         RoundedRectangleBorder(
           borderRadius: .circular(8),
-          side: BorderSide(color: GlyphColors.borderMedium),
+          side: BorderSide(color: GlyphColors.borderStrong),
         ),
       ),
       chevronColor: .resolveWith((states) {
         if (states.contains(WidgetState.disabled)) {
-          return GlyphColors.borderMedium;
+          return GlyphColors.borderStrong;
         }
-        return GlyphColors.textTertiary;
+        return GlyphColors.contentDisabled;
       }),
     );
   }
